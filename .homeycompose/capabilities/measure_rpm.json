@@ -1,0 +1,15 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Fan speed",
+    "sv": "Fläkthastighet"
+  },
+  "uiComponent": "sensor",
+  "getable": true,
+  "setable": false,
+  "units": {
+    "en": "RPM",
+    "sv": "RPM"
+  },
+  "icon": "/assets/icons/boost.svg"
+}

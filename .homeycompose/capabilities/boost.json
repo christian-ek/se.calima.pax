@@ -1,0 +1,13 @@
+{
+  "type": "boolean",
+  "title": {
+    "en": "Boost",
+    "sv": "Boost"
+  },
+  "uiComponent": "toggle",
+  "getable": true,
+  "setable": true,
+  "uiQuickAction": false,
+  "duration": true,
+  "icon": "/assets/icons/boost.svg"
+}

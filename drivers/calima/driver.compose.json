@@ -1,0 +1,61 @@
+{
+  "name": {
+    "en": "Calima"
+  },
+  "class": "fan",
+  "capabilities": [
+    "boost",
+    "measure_temperature",
+    "measure_humidity",
+    "measure_luminance",
+    "measure_rpm",
+    "mode"
+  ],
+  "capabilitiesOptions": {
+    "onoff": {
+      "titleTrue": "Boost on",
+      "titleFalse": "Boost off",
+      "title": { "en": "Start boost" },
+      "desc": { "en": "Start boost for 60 seconds." }
+    },
+    "measure_temperature": {
+      "decimals": 0
+    }
+  },
+  "platforms": [
+    "local"
+  ],
+  "connectivity": [
+    "ble"
+  ],
+  "images": {
+    "small": "{{driverAssetsPath}}/images/small.png",
+    "large": "{{driverAssetsPath}}/images/large.png",
+    "xlarge": "{{driverAssetsPath}}/images/xlarge.png"
+  },
+  "pair": [
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "options": {
+        "singular": true
+      },
+      "navigation": {
+        "next": "pincode"
+      }
+    },
+    {
+      "id": "pincode",
+      "template": "pincode",
+      "options": {
+        "title": "PAX Calima pincode",
+        "hint": "Enter the device's pincode",
+        "type": "number",
+        "length": 8
+      }
+    },
+    {
+      "id": "done"
+    }
+  ]
+}

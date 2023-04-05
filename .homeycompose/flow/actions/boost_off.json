@@ -1,0 +1,18 @@
+{
+    "id": "boost_off",
+    "title": {
+        "en": "Turn boost off",
+        "sv": "Stäng av boost"
+    },
+    "titleFormatted": {
+        "en": "Turn boost off",
+        "sv": "Stäng av boost"
+    },
+    "args": [
+        {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=calima"
+        }
+    ]
+}

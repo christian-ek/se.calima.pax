@@ -1,0 +1,41 @@
+{
+  "id": "se.pax.calima",
+  "version": "1.0.0",
+  "compatibility": ">=5.0.0",
+  "sdk": 3,
+  "platforms": [
+    "local"
+  ],
+  "name": {
+    "en": "Pax Calima"
+  },
+  "description": {
+    "en": "Pax helps your residence breathe.",
+    "sv": "Pax hjälper din bostad att andas."
+  },
+  "category": [
+    "climate"
+  ],
+  "permissions": [
+    "homey:wireless:ble",
+    "homey:app:com.athom.example"
+  ],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "Christian Ek",
+    "email": "christian.ek@live.se"
+  },
+  "contributing": {
+    "donate": {
+      "paypal": {
+        "username": "christianoak"
+      }
+    }
+  },
+  "support": "mailto:christian.ek@live.se",
+  "brandColor": "#FF3F32"
+}

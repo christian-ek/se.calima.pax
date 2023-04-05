@@ -1,0 +1,12 @@
+{
+  "type": "string",
+  "title": {
+    "en": "Mode",
+    "sv": "Läge"
+  },
+  "uiComponent": "sensor",
+  "getable": true,
+  "setable": false,
+  "icon": "/assets/icons/mode.svg"
+
+}
