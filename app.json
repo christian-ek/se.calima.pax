@@ -8,7 +8,8 @@
     "local"
   ],
   "name": {
-    "en": "Pax Calima"
+    "en": "Pax Calima",
+    "sv": "Pax Calima"
   },
   "description": {
     "en": "Pax helps your residence breathe.",
@@ -37,8 +38,23 @@
       }
     }
   },
+  "tags": {
+    "en": [
+      "Pax",
+      "Calima",
+      "Fan",
+      "Bathroom"
+    ],
+    "sv": [
+      "Pax",
+      "Calima",
+      "Fläkt",
+      "Badrum"
+    ]
+  },
   "support": "mailto:christian.ek@live.se",
   "brandColor": "#FF3F32",
+  "source": "https://github.com/christian-ek/se.calima.pax",
   "flow": {
     "actions": [
       {
