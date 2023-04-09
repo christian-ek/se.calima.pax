@@ -13,5 +13,8 @@
   },
   "1.0.5": {
     "en": "Change icon for boost"
+  },
+  "1.0.6": {
+    "en": "Minor bugfix when starting boost"
   }
 }
