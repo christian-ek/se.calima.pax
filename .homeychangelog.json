@@ -4,5 +4,8 @@
   },
   "1.0.2": {
     "en": "Some bugfixes and optimizations"
+  },
+  "1.0.3": {
+    "en": "Add driver icon"
   }
 }
