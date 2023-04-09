@@ -7,28 +7,16 @@ class PaxCalimaDevice extends Homey.Device {
 
   static SYNC_INTERVAL = 1000 * 30; // 30 seconds
   static DEFAULT_BOOST_DURATION = 900;
+  static BLE_SEARCH_TIMEOUT = 30;
 
   /**
    * onInit is called when the device is initialized.
    */
   async onInit() {
-    const { peripheralUuid, mode } = this.getStore();
-    const { pin } = this.getData();
+    const { mode } = this.getStore();
+    this._device = null;
 
-    this.setUnavailable().catch(this.error);
-
-    this.log('device loaded');
-
-    this.printInfo();
-
-    this.setUnavailable().catch(this.error);
-    const advertisement = await this.homey.ble.find(peripheralUuid);
-
-    this.api = new PaxApi(pin, advertisement, this.homey);
-
-    this.onSync = this.onSync.bind(this);
-    this.onSyncInterval = setInterval(this.onSync, this.constructor.SYNC_INTERVAL);
-    this.onSync(); // do an initial sync
+    this.setUnavailable('Unable to connect to PAX Calima').catch(this.error);
 
     if (mode !== 'HeatDistributionMode') {
       this.registerCapabilityListener('boost', async (value, options) => {
@@ -40,7 +28,31 @@ class PaxCalimaDevice extends Homey.Device {
         });
       });
     }
-    this.log('Pax Calima device has been initiated');
+    this._searchDevice(0);
+  }
+
+  async _searchDevice(timeout) {
+    setTimeout(async () => {
+      const { id } = this.getData();
+      this._device = await this.homey.ble.find(id);
+
+      if (this._device != null && this._device.id === id) {
+        this._onDeviceInit();
+      } else {
+        this._searchDevice(this.constructor.BLE_SEARCH_TIMEOUT);
+      }
+    }, timeout * 1000);
+  }
+
+  async _onDeviceInit() {
+    const { pin } = this.getData();
+
+    this.log(`[${this.getName()}]`, 'Found device advertisement');
+
+    this.api = new PaxApi(pin, this._device, this.homey);
+    this.onSync = this.onSync.bind(this);
+    this.onSyncInterval = setInterval(this.onSync, this.constructor.SYNC_INTERVAL);
+    this.onSync(); // do an initial sync
   }
 
   async boostOnOff(options) {
@@ -73,22 +85,28 @@ class PaxCalimaDevice extends Homey.Device {
 
   async onSync() {
     const { firstRun, mode } = this.getStore();
+    this.log(`[${this.getName()}]`, 'Refresh device');
 
     if (firstRun) this.firstRun(mode);
 
-    this.log('Syncing...');
+    try {
+      const fanstate = await this.api.getStatus();
+      this.log(`[${this.getName()}]`, fanstate.toString());
+      this.setCapabilityValue('measure_temperature', fanstate.Temp).catch(this.error);
+      this.setCapabilityValue('measure_humidity', fanstate.Humidity).catch(this.error);
+      this.setCapabilityValue('measure_luminance', fanstate.Light).catch(this.error);
+      this.setCapabilityValue('measure_rpm', fanstate.RPM).catch(this.error);
+      this.setCapabilityValue('mode', fanstate.Mode).catch(this.error);
 
-    const fanstate = await this.api.getStatus();
-    this.log(fanstate.toString());
-    this.setCapabilityValue('measure_temperature', fanstate.Temp).catch(this.error);
-    this.setCapabilityValue('measure_humidity', fanstate.Humidity).catch(this.error);
-    this.setCapabilityValue('measure_luminance', fanstate.Light).catch(this.error);
-    this.setCapabilityValue('measure_rpm', fanstate.RPM).catch(this.error);
-    this.setCapabilityValue('mode', fanstate.Mode).catch(this.error);
+      if (mode !== 'HeatDistributionMode') {
+        const boostmode = await this.api.getBoostMode();
+        this.log(`[${this.getName()}]`, boostmode.toString());
+        this.setCapabilityValue('boost', !!boostmode.OnOff).catch(this.error);
+      }
 
-    if (mode !== 'HeatDistributionMode') {
-      const boostmode = await this.api.getBoostMode();
-      this.setCapabilityValue('boost', !!boostmode.OnOff).catch(this.error);
+      this.setAvailable();
+    } catch (error) {
+      this.homey.error(error);
     }
   }
 
@@ -135,8 +153,8 @@ class PaxCalimaDevice extends Homey.Device {
     const { onSyncInterval } = this;
 
     this.log('PAX Calima device has been deleted');
-    if (this._peripheral) {
-      this._peripheral.disconnect();
+    if (this.api) {
+      this.api.disconnect();
     }
     clearInterval(onSyncInterval);
   }

@@ -11,8 +11,8 @@ class PaxCalimaDriver extends Homey.Driver {
   async onInit() {
     this.advertisements = {};
     this.onDiscover = this.onDiscover.bind(this);
-    this.onDiscoverInterval = setInterval(this.onDiscover, this.constructor.DISCOVER_INTERVAL);
-    await this.onDiscover();
+    // this.onDiscoverInterval = setInterval(this.onDiscover, this.constructor.DISCOVER_INTERVAL);
+    // await this.onDiscover();
     this.names = {};
     this.modes = {};
     this.log('Pax Calima driver has been initiated');
@@ -27,7 +27,9 @@ class PaxCalimaDriver extends Homey.Driver {
 
     const advertisements = await this.homey.ble.discover([serviceIds.DISCOVERY_SERVICE_UUID]).catch(this.error);
 
-    this.homey.log(`All discovered devices: ${advertisements.map((device) => device.address).join(', ')}`);
+    this.homey.log(`All discovered devices: ${advertisements.map((device) => {
+      return `${device.address} (${device.localName})`;
+    }).join(', ')}`);
 
     advertisements
       .filter((a) => a.address.startsWith('58:2B:DB')) // filter PAX Calima address
