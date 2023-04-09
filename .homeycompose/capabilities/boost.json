@@ -1,13 +1,25 @@
 {
   "type": "boolean",
-  "title": {
-    "en": "Boost",
-    "sv": "Boost"
-  },
   "uiComponent": "toggle",
   "getable": true,
   "setable": true,
   "uiQuickAction": false,
   "duration": true,
-  "icon": "/assets/icons/boost.svg"
+  "icon": "/assets/icons/boost.svg",
+  "title": {
+    "en": "Toggle boost (on/off)",
+    "sv": "Växla boostläge (på/av)"
+  },
+  "titleTrue": {
+    "en": "Boost on",
+    "sv": "Boost på"
+  },
+  "titleFalse": {
+    "en": "Boost off",
+    "sv": "Boost av"
+  },
+  "desc": {
+     "en": "Start boost for 15 minutes.",
+     "sv": "Starta boost i 15 minuter."
+    }
 }

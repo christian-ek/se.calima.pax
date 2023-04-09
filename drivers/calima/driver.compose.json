@@ -12,12 +12,6 @@
     "mode"
   ],
   "capabilitiesOptions": {
-    "onoff": {
-      "titleTrue": "Boost on",
-      "titleFalse": "Boost off",
-      "title": { "en": "Start boost" },
-      "desc": { "en": "Start boost for 60 seconds." }
-    },
     "measure_temperature": {
       "decimals": 0
     }
