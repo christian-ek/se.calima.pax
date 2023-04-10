@@ -19,5 +19,8 @@
   },
   "1.0.7": {
     "en": "Retry getting peripheral if not found"
+  },
+  "1.0.8": {
+    "en": "Trying to fix the loop for finding ble device"
   }
 }
