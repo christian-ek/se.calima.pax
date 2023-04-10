@@ -28,25 +28,31 @@ class PaxCalimaDevice extends Homey.Device {
         });
       });
     }
-    this._searchDevice(0);
+    this.find().then(this._onDeviceInit.bind(this));
   }
 
-  async _searchDevice(timeout) {
-    try {
-      setTimeout(async () => {
-        const { id } = this.getData();
-        this._device = await this.homey.ble.find(id);
+  async findLoop() {
+    this.log('Start the find loop');
 
-        if (this._device && this._device.id === id) {
-          this._onDeviceInit();
-        } else {
-          this._searchDevice(this.constructor.BLE_SEARCH_TIMEOUT);
-        }
-      }, timeout * 1000);
+    return new Promise((resolve) => {
+      this.log('Trying to find again in', this.findDelay ? '30s' : '10s');
+      setTimeout(async () => {
+        this.findDelay = true;
+        await this.find();
+        resolve();
+      }, this.findDelay ? 30000 : 10000);
+    });
+  }
+
+  async find() {
+    try {
+      const { id } = this.getData();
+      this._device = await this.homey.ble.find(id);
+
+      return Promise.resolve(true);
     } catch (error) {
-      this.homey.error(error);
-      await new Promise((resolve) => setTimeout(resolve, timeout * 1000));
-      this._searchDevice(timeout);
+      this.error(error);
+      return this.findLoop();
     }
   }
 
@@ -95,7 +101,7 @@ class PaxCalimaDevice extends Homey.Device {
     if (firstRun) this.firstRun(mode);
 
     try {
-      const fanstate = await this.api.getStatus();
+      const fanstate = await this.api.getStatus().catch(this.error);
       this.log(`[${this.getName()}]`, fanstate.toString());
       this.setCapabilityValue('measure_temperature', fanstate.Temp).catch(this.error);
       this.setCapabilityValue('measure_humidity', fanstate.Humidity).catch(this.error);
@@ -104,14 +110,14 @@ class PaxCalimaDevice extends Homey.Device {
       this.setCapabilityValue('mode', fanstate.Mode).catch(this.error);
 
       if (mode !== 'HeatDistributionMode') {
-        const boostmode = await this.api.getBoostMode();
+        const boostmode = await this.api.getBoostMode().catch(this.error);
         this.log(`[${this.getName()}]`, boostmode.toString());
         this.setCapabilityValue('boost', !!boostmode.OnOff).catch(this.error);
       }
 
       this.setAvailable();
     } catch (error) {
-      this.homey.error(error);
+      this.error(error);
     }
   }
 
