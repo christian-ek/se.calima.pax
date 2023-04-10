@@ -32,16 +32,22 @@ class PaxCalimaDevice extends Homey.Device {
   }
 
   async _searchDevice(timeout) {
-    setTimeout(async () => {
-      const { id } = this.getData();
-      this._device = await this.homey.ble.find(id);
+    try {
+      setTimeout(async () => {
+        const { id } = this.getData();
+        this._device = await this.homey.ble.find(id);
 
-      if (this._device != null && this._device.id === id) {
-        this._onDeviceInit();
-      } else {
-        this._searchDevice(this.constructor.BLE_SEARCH_TIMEOUT);
-      }
-    }, timeout * 1000);
+        if (this._device && this._device.id === id) {
+          this._onDeviceInit();
+        } else {
+          this._searchDevice(this.constructor.BLE_SEARCH_TIMEOUT);
+        }
+      }, timeout * 1000);
+    } catch (error) {
+      this.homey.error(error);
+      await new Promise((resolve) => setTimeout(resolve, timeout * 1000));
+      this._searchDevice(timeout);
+    }
   }
 
   async _onDeviceInit() {
@@ -52,7 +58,6 @@ class PaxCalimaDevice extends Homey.Device {
     this.api = new PaxApi(pin, this._device, this.homey);
     this.onSync = this.onSync.bind(this);
     this.onSyncInterval = setInterval(this.onSync, this.constructor.SYNC_INTERVAL);
-    this.onSync(); // do an initial sync
   }
 
   async boostOnOff(options) {
