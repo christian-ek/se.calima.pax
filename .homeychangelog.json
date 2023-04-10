@@ -16,5 +16,8 @@
   },
   "1.0.6": {
     "en": "Minor bugfix when starting boost"
+  },
+  "1.0.7": {
+    "en": "Retry getting peripheral if not found"
   }
 }
