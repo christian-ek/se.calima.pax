@@ -109,8 +109,8 @@ class PaxCalimaDevice extends Homey.Device {
           this.setCapabilityValue('measure_luminance', fanstate.Light).catch(this.error);
           this.setCapabilityValue('measure_rpm', fanstate.RPM).catch(this.error);
           this.setCapabilityValue('mode', fanstate.Mode).catch(this.error);
+          this.setAvailable();
         })
-        .then(this.setAvailable())
         .catch(this.error);
 
       if (mode !== 'HeatDistributionMode') {
