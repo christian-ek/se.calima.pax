@@ -25,5 +25,8 @@
   },
   "1.0.9": {
     "en": "Minor fix"
+  },
+  "1.0.10": {
+    "en": "Prevent device from being available when not"
   }
 }
