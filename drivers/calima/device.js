@@ -35,12 +35,12 @@ class PaxCalimaDevice extends Homey.Device {
     this.log('Start the find loop');
 
     return new Promise((resolve) => {
-      this.log('Trying to find again in', this.findDelay ? '30s' : '10s');
+      this.log('Trying to find again in', this.delay ? '30s' : '10s');
       setTimeout(async () => {
-        this.findDelay = true;
+        this.delay = true;
         await this.find();
         resolve();
-      }, this.findDelay ? 30000 : 10000);
+      }, this.delay ? 30000 : 10000);
     });
   }
 
@@ -101,21 +101,25 @@ class PaxCalimaDevice extends Homey.Device {
     if (firstRun) this.firstRun(mode);
 
     try {
-      const fanstate = await this.api.getStatus().catch(this.error);
-      this.log(`[${this.getName()}]`, fanstate.toString());
-      this.setCapabilityValue('measure_temperature', fanstate.Temp).catch(this.error);
-      this.setCapabilityValue('measure_humidity', fanstate.Humidity).catch(this.error);
-      this.setCapabilityValue('measure_luminance', fanstate.Light).catch(this.error);
-      this.setCapabilityValue('measure_rpm', fanstate.RPM).catch(this.error);
-      this.setCapabilityValue('mode', fanstate.Mode).catch(this.error);
+      await this.api.getStatus()
+        .then((fanstate) => {
+          this.log(`[${this.getName()}]`, fanstate.toString());
+          this.setCapabilityValue('measure_temperature', fanstate.Temp).catch(this.error);
+          this.setCapabilityValue('measure_humidity', fanstate.Humidity).catch(this.error);
+          this.setCapabilityValue('measure_luminance', fanstate.Light).catch(this.error);
+          this.setCapabilityValue('measure_rpm', fanstate.RPM).catch(this.error);
+          this.setCapabilityValue('mode', fanstate.Mode).catch(this.error);
+        })
+        .then(this.setAvailable())
+        .catch(this.error);
 
       if (mode !== 'HeatDistributionMode') {
-        const boostmode = await this.api.getBoostMode().catch(this.error);
-        this.log(`[${this.getName()}]`, boostmode.toString());
-        this.setCapabilityValue('boost', !!boostmode.OnOff).catch(this.error);
+        await this.api.getBoostMode()
+          .then((boostmode) => {
+            this.log(`[${this.getName()}]`, boostmode.toString());
+            this.setCapabilityValue('boost', !!boostmode.OnOff).catch(this.error);
+          }).catch(this.error);
       }
-
-      this.setAvailable();
     } catch (error) {
       this.error(error);
     }
