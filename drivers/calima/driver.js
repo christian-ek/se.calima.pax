@@ -10,16 +10,16 @@ class PaxCalimaDriver extends Homey.Driver {
 
   async onInit() {
     this.advertisements = {};
+    this.deviceProperties = {};
     this.onDiscover = this.onDiscover.bind(this);
     this.onDiscoverInterval = setInterval(this.onDiscover, this.constructor.DISCOVER_INTERVAL);
-    await this.onDiscover();
-    this.names = {};
-    this.modes = {};
+    this.onDiscover();
     this.log('Pax Calima driver has been initiated');
   }
 
   async onDiscover() {
     this.log('Discovering...');
+
     const alreadyAdded = this.getDevices().map((device) => {
       const { id } = device.getData();
       return id;
@@ -27,34 +27,43 @@ class PaxCalimaDriver extends Homey.Driver {
 
     const advertisements = await this.homey.ble.discover([serviceIds.DISCOVERY_SERVICE_UUID]).catch(this.error);
 
-    this.homey.log(`All discovered devices: ${advertisements.map((device) => {
-      return `${device.address} (${device.localName})`;
-    }).join(', ')}`);
-
-    advertisements
+    const filteredAdvertisements = advertisements
       .filter((a) => a.address.startsWith('58:2B:DB')) // filter PAX Calima address
       .filter((a) => !alreadyAdded.includes(a.uuid)) // filter already added
-      .filter((a) => !this.advertisements[a.address]) // filter already found
-      .forEach(async (advertisement) => {
-        this.homey.log(`Found device that hasn't been added [${advertisement.address}] Looking up name and mode...`);
-        const api = new PaxApi(null, advertisement, this.homey);
-        api.getNameAndMode()
-          .then((value) => {
-            this.log(`Done looking up device.. Address: ${advertisement.address} - Name: ${value.name} - Mode: ${value.mode}`);
-            this.names[advertisement.address] = value.name;
-            this.modes[advertisement.address] = value.mode;
-            this.advertisements[advertisement.address] = advertisement;
-          })
-          .catch(this.error);
-      });
+      .filter((a) => !this.advertisements[a.address]); // filter already found
+
+    this.homey.log(`Found ${filteredAdvertisements.length} device(s) that haven't been added: ${filteredAdvertisements.map((a) => `${a.address} (${a.localName})`).join(', ')}`);
+
+    const promises = filteredAdvertisements.map(async (advertisement) => {
+      try {
+        const { address } = advertisement;
+
+        const peripheral = await advertisement.connect();
+        await peripheral.assertConnected();
+        await peripheral.discoverAllServicesAndCharacteristics();
+
+        const api = new PaxApi(null, peripheral, this.homey);
+        const { name, mode } = await api.getNameAndMode();
+        this.log(`New device ready. Address: ${address}, Name: ${name}, Mode: ${mode}`);
+        this.deviceProperties[address] = { name, mode };
+        this.advertisements[address] = advertisement;
+        peripheral.disconnect();
+        return { success: true };
+      } catch (error) {
+        this.homey.error(error);
+        return { success: false, error };
+      }
+    });
+
+    await Promise.all(promises);
   }
 
   // Pairing
   async onPair(session) {
     session.setHandler('list_devices', async () => {
-      return Promise.all(Object.entries(this.advertisements).map(async ([name, advertisement]) => {
+      return Promise.all(Object.values(this.advertisements).map((advertisement) => {
         const device = {
-          name: this.names[advertisement.address],
+          name: this.deviceProperties[advertisement.address].name,
           data: {
             id: advertisement.uuid,
             address: advertisement.address,
@@ -62,7 +71,7 @@ class PaxCalimaDriver extends Homey.Driver {
           },
           store: {
             peripheralUuid: advertisement.uuid,
-            mode: this.modes[advertisement.address],
+            mode: this.deviceProperties[advertisement.address].mode,
             firstRun: true,
           },
         };

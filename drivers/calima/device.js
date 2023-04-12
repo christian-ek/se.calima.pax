@@ -32,8 +32,6 @@ class PaxCalimaDevice extends Homey.Device {
   }
 
   async findLoop() {
-    this.log('Start the find loop');
-
     return new Promise((resolve) => {
       this.log('Trying to find again in', this.delay ? '30s' : '10s');
       setTimeout(async () => {
@@ -56,14 +54,40 @@ class PaxCalimaDevice extends Homey.Device {
     }
   }
 
-  async _onDeviceInit() {
+  async connectToDevice() {
     const { pin } = this.getData();
 
-    this.log(`[${this.getName()}]`, 'Found device advertisement');
+    const peripheral = await this._device.connect();
+    await peripheral.assertConnected();
+    await peripheral.discoverAllServicesAndCharacteristics();
 
-    this.api = new PaxApi(pin, this._device, this.homey);
-    this.onSync = this.onSync.bind(this);
-    this.onSyncInterval = setInterval(this.onSync, this.constructor.SYNC_INTERVAL);
+    this.log(`[${this.getName()}]`, 'Connected to peripheral');
+    this.api = new PaxApi(pin, peripheral, this.homey);
+
+    peripheral.once('disconnect', () => {
+      this.homey.log('Disconnected from peripheral');
+      this.connectToDevice(this._device); // attempt to reconnect
+    });
+  }
+
+  async _onDeviceInit() {
+    let isConnected = false;
+    let useDelay = false;
+    while (!isConnected) {
+      if (useDelay) {
+        await new Promise((r) => setTimeout(r, 10000));
+      }
+
+      try {
+        await this.connectToDevice();
+        this.onSync = this.onSync.bind(this);
+        this.onSyncInterval = setInterval(this.onSync, this.constructor.SYNC_INTERVAL);
+        isConnected = true;
+      } catch (error) {
+        useDelay = true;
+        this.homey.error(`[${this.getName()}]`, 'Failed to connect to peripheral');
+      }
+    }
   }
 
   async boostOnOff(options) {
