@@ -58,9 +58,12 @@ class PaxCalimaDevice extends Homey.Device {
     const { pin } = this.getData();
     let isConnected = false;
     let useDelay = false;
+    let attempt = 1;
 
+    this.homey.log(`[${this.getName()}]`, 'Starting loop to try to connect..');
     while (!isConnected) {
       if (useDelay) await new Promise((r) => setTimeout(r, 10000));
+      this.homey.log(`[${this.getName()}]`, `Attempt #${attempt}`);
 
       try {
         const peripheral = await this._device.connect();
@@ -69,16 +72,17 @@ class PaxCalimaDevice extends Homey.Device {
 
         this.log(`[${this.getName()}]`, 'Connected to peripheral');
         this.api = new PaxApi(pin, peripheral, this.homey);
+        isConnected = true;
 
         peripheral.once('disconnect', async () => {
           this.homey.log(`[${this.getName()}]`, 'Disconnected from peripheral, reconnecting..');
           await this.connectToDevice(); // attempt to reconnect
         });
       } catch (error) {
+        attempt++;
         useDelay = true;
         this.homey.error(`[${this.getName()}]`, 'Failed to connect to peripheral');
       }
-      isConnected = true;
     }
   }
 
@@ -121,6 +125,16 @@ class PaxCalimaDevice extends Homey.Device {
     this.log(`[${this.getName()}]`, 'Refresh device');
 
     if (firstRun) this.firstRun(mode);
+
+    if (!this.peripheral) {
+      this.homey.log('Peripheral not found');
+      return;
+    }
+
+    if (!this.peripheral.assertConnected()) {
+      this.homey.log('Peripheral not connected.');
+      return;
+    }
 
     try {
       await this.api.getStatus()
