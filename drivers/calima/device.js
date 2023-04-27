@@ -126,13 +126,7 @@ class PaxCalimaDevice extends Homey.Device {
 
     if (firstRun) this.firstRun(mode);
 
-    if (!this.peripheral) {
-      this.homey.log('Peripheral not found');
-      return;
-    }
-
-    if (!this.peripheral.assertConnected()) {
-      this.homey.log('Peripheral not connected.');
+    if (!this.api.checkConnection) {
       return;
     }
 
