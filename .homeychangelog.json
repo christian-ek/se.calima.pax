@@ -34,5 +34,8 @@
   },
   "1.1.1": {
     "en": "Add some logging"
+  },
+  "1.1.2": {
+    "en": "Minor fix"
   }
 }
