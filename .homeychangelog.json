@@ -46,5 +46,8 @@
   },
   "1.1.5": {
     "en": "Fix for filtering out Pax Calima device advertisements"
+  },
+  "1.1.6": {
+    "en": "Fix bug where id could be lowerCase and not match advertisements"
   }
 }
