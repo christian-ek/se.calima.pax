@@ -49,5 +49,8 @@
   },
   "1.1.6": {
     "en": "Fix bug where id could be lowerCase and not match advertisements"
+  },
+  "1.1.7": {
+    "en": "Minor fix"
   }
 }
