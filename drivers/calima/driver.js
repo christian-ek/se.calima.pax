@@ -28,7 +28,7 @@ class PaxCalimaDriver extends Homey.Driver {
 
     const filteredAdvertisements = advertisements
       .filter((a) => a.address.toUpperCase().startsWith('58:2B:DB')) // filter PAX Calima address
-      .filter((a) => !alreadyAdded.includes(a.uuid.toUpperCase())) // filter already added
+      .filter((a) => !alreadyAdded.includes(a.uuid)) // filter already added
       .filter((a) => !this.advertisements[a.address.toUpperCase()]); // filter already found
 
     this.homey.log(`[Discovery ALL] Found ${advertisements.length} bluetooth devices: ${advertisements.map((a) => `${a.address.toUpperCase()} (${a.localName})`).join(', ')}`);
@@ -65,12 +65,12 @@ class PaxCalimaDriver extends Homey.Driver {
         const device = {
           name: this.deviceProperties[advertisement.address.toUpperCase()].name,
           data: {
-            id: advertisement.uuid.toUpperCase(),
+            id: advertisement.uuid,
             address: advertisement.address.toUpperCase(),
             pin: '',
           },
           store: {
-            peripheralUuid: advertisement.uuid.toUpperCase(),
+            peripheralUuid: advertisement.uuid,
             mode: this.deviceProperties[advertisement.address.toUpperCase()].mode,
             firstRun: true,
           },
