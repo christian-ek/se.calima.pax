@@ -1,7 +1,6 @@
 'use strict';
 
 const Homey = require('homey');
-const serviceIds = require('../../lib/serviceIds');
 const PaxApi = require('../../lib/api');
 
 class PaxCalimaDriver extends Homey.Driver {
