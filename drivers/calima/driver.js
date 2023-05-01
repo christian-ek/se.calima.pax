@@ -6,7 +6,7 @@ const PaxApi = require('../../lib/api');
 
 class PaxCalimaDriver extends Homey.Driver {
 
-  static DISCOVER_INTERVAL = 1000 * 60 * 1; // 1 minute
+  static DISCOVER_INTERVAL = 1000 * 60 * 5; // 1 minutes
 
   async onInit() {
     this.advertisements = {};
@@ -25,14 +25,15 @@ class PaxCalimaDriver extends Homey.Driver {
       return id;
     });
 
-    const advertisements = await this.homey.ble.discover([serviceIds.DISCOVERY_SERVICE_UUID]).catch(this.error);
+    const advertisements = await this.homey.ble.discover().catch(this.error);
 
     const filteredAdvertisements = advertisements
       .filter((a) => a.address.startsWith('58:2B:DB')) // filter PAX Calima address
       .filter((a) => !alreadyAdded.includes(a.uuid)) // filter already added
       .filter((a) => !this.advertisements[a.address]); // filter already found
 
-    this.homey.log(`Found ${filteredAdvertisements.length} device(s) that haven't been added: ${filteredAdvertisements.map((a) => `${a.address} (${a.localName})`).join(', ')}`);
+    this.homey.log(`[Discovery ALL] Found ${advertisements.length} bluetooth devices. ${advertisements.map((a) => `${a.address} (${a.localName})`).join(', ')}`);
+    this.homey.log(`[Discovery PAX] Found ${filteredAdvertisements.length} device(s) that haven't been added: ${filteredAdvertisements.map((a) => `${a.address} (${a.localName})`).join(', ')}`);
 
     const promises = filteredAdvertisements.map(async (advertisement) => {
       try {
