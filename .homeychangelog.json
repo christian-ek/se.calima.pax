@@ -43,5 +43,8 @@
   },
   "1.1.4": {
     "en": "Add some debug information"
+  },
+  "1.1.5": {
+    "en": "Fix for filtering out Pax Calima device advertisements"
   }
 }
