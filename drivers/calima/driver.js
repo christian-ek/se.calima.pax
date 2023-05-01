@@ -29,11 +29,11 @@ class PaxCalimaDriver extends Homey.Driver {
 
     const filteredAdvertisements = advertisements
       .filter((a) => a.address.toUpperCase().startsWith('58:2B:DB')) // filter PAX Calima address
-      .filter((a) => !alreadyAdded.includes(a.uuid)) // filter already added
-      .filter((a) => !this.advertisements[a.address]); // filter already found
+      .filter((a) => !alreadyAdded.includes(a.uuid.toUpperCase())) // filter already added
+      .filter((a) => !this.advertisements[a.address.toUpperCase()]); // filter already found
 
-    this.homey.log(`[Discovery ALL] Found ${advertisements.length} bluetooth devices. ${advertisements.map((a) => `${a.address} (${a.localName})`).join(', ')}`);
-    this.homey.log(`[Discovery PAX] Found ${filteredAdvertisements.length} device(s) that haven't been added: ${filteredAdvertisements.map((a) => `${a.address} (${a.localName})`).join(', ')}`);
+    this.homey.log(`[Discovery ALL] Found ${advertisements.length} bluetooth devices: ${advertisements.map((a) => `${a.address.toUpperCase()} (${a.localName})`).join(', ')}`);
+    this.homey.log(`[Discovery PAX] Found ${filteredAdvertisements.length} device(s) that haven't been added: ${filteredAdvertisements.map((a) => `${a.address.toUpperCase()} (${a.localName})`).join(', ')}`);
 
     const promises = filteredAdvertisements.map(async (advertisement) => {
       try {
@@ -45,9 +45,9 @@ class PaxCalimaDriver extends Homey.Driver {
 
         const api = new PaxApi(null, peripheral, this.homey);
         const { name, mode } = await api.getNameAndMode();
-        this.log(`New device ready. Address: ${address}, Name: ${name}, Mode: ${mode}`);
-        this.deviceProperties[address] = { name, mode };
-        this.advertisements[address] = advertisement;
+        this.log(`New device ready. Address: ${address.toUpperCase()}, Name: ${name}, Mode: ${mode}`);
+        this.deviceProperties[address.toUpperCase()] = { name, mode };
+        this.advertisements[address.toUpperCase()] = advertisement;
         peripheral.disconnect();
         return { success: true };
       } catch (error) {
@@ -64,15 +64,15 @@ class PaxCalimaDriver extends Homey.Driver {
     session.setHandler('list_devices', async () => {
       return Promise.all(Object.values(this.advertisements).map((advertisement) => {
         const device = {
-          name: this.deviceProperties[advertisement.address].name,
+          name: this.deviceProperties[advertisement.address.toUpperCase()].name,
           data: {
-            id: advertisement.uuid,
-            address: advertisement.address,
+            id: advertisement.uuid.toUpperCase(),
+            address: advertisement.address.toUpperCase(),
             pin: '',
           },
           store: {
-            peripheralUuid: advertisement.uuid,
-            mode: this.deviceProperties[advertisement.address].mode,
+            peripheralUuid: advertisement.uuid.toUpperCase(),
+            mode: this.deviceProperties[advertisement.address.toUpperCase()].mode,
             firstRun: true,
           },
         };
@@ -95,7 +95,7 @@ class PaxCalimaDriver extends Homey.Driver {
 
     session.setHandler('done', async (data) => {
       const deviceAddress = this.device.data.address;
-      delete this.advertisements[deviceAddress];
+      delete this.advertisements[deviceAddress.toUpperCase()];
       return this.device;
     });
   }
