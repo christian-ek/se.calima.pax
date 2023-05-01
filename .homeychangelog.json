@@ -40,5 +40,8 @@
   },
   "1.1.3": {
     "en": "Remove unused permission"
+  },
+  "1.1.4": {
+    "en": "Add some debug information"
   }
 }
