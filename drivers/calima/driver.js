@@ -28,7 +28,7 @@ class PaxCalimaDriver extends Homey.Driver {
     const advertisements = await this.homey.ble.discover().catch(this.error);
 
     const filteredAdvertisements = advertisements
-      .filter((a) => a.address.startsWith('58:2B:DB')) // filter PAX Calima address
+      .filter((a) => a.address.toUpperCase().startsWith('58:2B:DB')) // filter PAX Calima address
       .filter((a) => !alreadyAdded.includes(a.uuid)) // filter already added
       .filter((a) => !this.advertisements[a.address]); // filter already found
 
