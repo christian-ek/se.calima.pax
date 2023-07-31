@@ -10,8 +10,7 @@ class PaxCalimaDriver extends Homey.Driver {
   async onInit() {
     this.advertisements = {};
     this.deviceProperties = {};
-    this.onDiscover = this.onDiscover.bind(this);
-    this.onDiscoverInterval = setInterval(this.onDiscover, this.constructor.DISCOVER_INTERVAL);
+    this.onDiscoverInterval = setInterval(() => this.onDiscover(), this.constructor.DISCOVER_INTERVAL);
     this.onDiscover();
     this.log('Pax Calima driver has been initiated');
   }
