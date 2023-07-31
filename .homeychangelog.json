@@ -55,5 +55,8 @@
   },
   "1.1.8": {
     "en": "Fix BLE Timeout on 2019 Homey Pro"
+  },
+  "1.1.9": {
+    "en": "Fixed bug when deleting device"
   }
 }
