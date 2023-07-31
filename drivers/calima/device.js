@@ -15,6 +15,9 @@ class PaxCalimaDevice extends Homey.Device {
   async onInit() {
     const { mode } = this.getStore();
     this._device = null;
+    this._peripheral = null;
+    this.onSyncInterval = null; // Store the setInterval object
+    this.isDeleted = false;
 
     this.setUnavailable('Unable to connect to PAX Calima').catch(this.error);
 
@@ -32,14 +35,17 @@ class PaxCalimaDevice extends Homey.Device {
   }
 
   async findLoop() {
-    return new Promise((resolve) => {
-      this.log('Trying to find again in', this.delay ? '30s' : '10s');
-      setTimeout(async () => {
-        this.delay = true;
-        await this.find();
-        resolve();
-      }, this.delay ? 30000 : 10000);
-    });
+    if (this.isDeleted) {
+      // If the device has been deleted, exit the loop immediately
+      return;
+    }
+
+    this.log('Trying to find again in', this.delay ? '30s' : '10s');
+    setTimeout(async () => {
+      this.delay = true;
+      await this.find();
+      this.findLoop(); // Continue the loop by calling findLoop() recursively after the timeout
+    }, this.delay ? 30000 : 10000);
   }
 
   async find() {
@@ -66,15 +72,15 @@ class PaxCalimaDevice extends Homey.Device {
       this.homey.log(`[${this.getName()}]`, `Attempt #${attempt}`);
 
       try {
-        const peripheral = await this._device.connect();
-        await peripheral.assertConnected();
-        await peripheral.discoverAllServicesAndCharacteristics();
+        this._peripheral = await this._device.connect();
+        await this._peripheral.assertConnected();
+        await this._peripheral.discoverAllServicesAndCharacteristics();
 
         this.log(`[${this.getName()}]`, 'Connected to peripheral');
-        this.api = new PaxApi(pin, peripheral, this.homey);
+        this.api = new PaxApi(pin, this._peripheral, this.homey);
         isConnected = true;
 
-        peripheral.once('disconnect', async () => {
+        this._peripheral.once('disconnect', async () => {
           this.homey.log(`[${this.getName()}]`, 'Disconnected from peripheral, reconnecting..');
           await this.connectToDevice(); // attempt to reconnect
         });
@@ -122,7 +128,6 @@ class PaxCalimaDevice extends Homey.Device {
 
   async onSync() {
     const { firstRun, mode } = this.getStore();
-    this.log(`[${this.getName()}]`, 'Refresh device');
 
     if (firstRun) this.firstRun(mode);
 
@@ -196,12 +201,15 @@ class PaxCalimaDevice extends Homey.Device {
    */
   onDeleted() {
     const { onSyncInterval } = this;
+    this.isDeleted = true; // Optionally set the flag to true if needed for other functions
+
+    clearInterval(onSyncInterval); // Clear the onSync interval to stop further execution
+
+    if (this._peripheral) {
+      this._peripheral.disconnect();
+    }
 
     this.log('PAX Calima device has been deleted');
-    if (this.api) {
-      this.api.disconnect();
-    }
-    clearInterval(onSyncInterval);
   }
 
 }
