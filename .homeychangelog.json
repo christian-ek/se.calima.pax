@@ -58,5 +58,8 @@
   },
   "1.1.9": {
     "en": "Fixed bug when deleting device"
+  },
+  "1.1.10": {
+    "en": "Trying to correct a discovery bug"
   }
 }
