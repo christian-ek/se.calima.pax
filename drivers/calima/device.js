@@ -21,6 +21,11 @@ class PaxCalimaDevice extends Homey.Device {
 
     this.setUnavailable('Unable to connect to PAX Calima').catch(this.error);
 
+    if (this.hasCapability('fanspeed') === false) {
+      // Add fanspeed capability if not already added. Added in 1.1.11
+      await this.addCapability('fanspeed');
+    }
+
     if (mode !== 'HeatDistributionMode') {
       this.registerCapabilityListener('boost', async (value, options) => {
         this.boostOnOff({
