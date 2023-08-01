@@ -1,0 +1,18 @@
+{
+  "type": "number",
+  "title": {
+    "en": "Fan speed",
+    "sv": "Fläkthastighet"
+  },
+  "uiComponent": "slider",
+  "getable": true,
+  "setable": true,
+  "insights": true,
+  "units": {
+    "en": "RPM",
+    "sv": "RPM"
+  },
+  "min": 0,
+  "max": 2000,
+  "step": 25
+}

@@ -92,6 +92,39 @@
             "filter": "driver_id=calima"
           }
         ]
+      },
+      {
+        "id": "fanspeed",
+        "title": {
+          "en": "Set fan speed",
+          "sv": "Sätt fläkthastighet"
+        },
+        "titleFormatted": {
+          "en": "Set fan speed to [[speed]] RPM",
+          "sv": "Sätt fläkthastighet till [[speed]] RPM"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=calima"
+          },
+          {
+            "type": "number",
+            "name": "speed",
+            "title": {
+              "en": "Fan speed",
+              "sv": "Fläkthastighet"
+            },
+            "placeholder": {
+              "en": "RPM",
+              "sv": "RPM"
+            },
+            "min": 0,
+            "max": 2000,
+            "step": 25
+          }
+        ]
       }
     ]
   },
@@ -107,7 +140,8 @@
         "measure_humidity",
         "measure_luminance",
         "measure_rpm",
-        "mode"
+        "mode",
+        "fanspeed"
       ],
       "capabilitiesOptions": {
         "measure_temperature": {
@@ -178,6 +212,24 @@
         "en": "Start boost for 15 minutes.",
         "sv": "Starta boost i 15 minuter."
       }
+    },
+    "fanspeed": {
+      "type": "number",
+      "title": {
+        "en": "Fan speed",
+        "sv": "Fläkthastighet"
+      },
+      "uiComponent": "slider",
+      "getable": true,
+      "setable": true,
+      "insights": true,
+      "units": {
+        "en": "RPM",
+        "sv": "RPM"
+      },
+      "min": 0,
+      "max": 2000,
+      "step": 25
     },
     "measure_rpm": {
       "type": "number",

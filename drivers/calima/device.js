@@ -32,6 +32,14 @@ class PaxCalimaDevice extends Homey.Device {
       });
     }
     this.find().then(this._onDeviceInit.bind(this));
+
+    this.registerCapabilityListener('fanspeed', this.onCapabilitySetFanSpeed.bind(this));
+
+    // Register action flow cards
+    const fanSpeedAction = this.homey.flow.getActionCard('fanspeed');
+    fanSpeedAction.registerRunListener(async (args, state) => {
+      this.onCapabilitySetFanSpeed(args.speed);
+    });
   }
 
   async findLoop() {
@@ -40,7 +48,7 @@ class PaxCalimaDevice extends Homey.Device {
       return;
     }
 
-    this.log('Trying to find again in', this.delay ? '30s' : '10s');
+    this.homey.log('Trying to find again in', this.delay ? '30s' : '10s');
     setTimeout(async () => {
       this.delay = true;
       await this.find();
@@ -76,7 +84,7 @@ class PaxCalimaDevice extends Homey.Device {
         await this._peripheral.assertConnected();
         await this._peripheral.discoverAllServicesAndCharacteristics();
 
-        this.log(`[${this.getName()}]`, 'Connected to peripheral');
+        this.homey.log(`[${this.getName()}]`, 'Connected to peripheral');
         this.api = new PaxApi(pin, this._peripheral, this.homey);
         isConnected = true;
 
@@ -96,6 +104,28 @@ class PaxCalimaDevice extends Homey.Device {
     await this.connectToDevice();
     this.onSync = this.onSync.bind(this);
     this.onSyncInterval = setInterval(this.onSync, this.constructor.SYNC_INTERVAL);
+  }
+
+  async onCapabilitySetFanSpeed(value) {
+    try {
+      await this.setCapabilityValue('fanspeed', value);
+      await this.api.setFanSpeed(2100, 1675, value);
+      this.homey.log(`[${this.getName()}]`, 'Fanspeed set to', value, 'RPM');
+    } catch (err) {
+      this.error(err);
+    }
+  }
+
+  async updateCapabilityValues(capability) {
+    const { device } = this;
+
+    const data = {
+      temperatureSet: this.getCapabilityValue('target_temperature'),
+      id: device.id,
+    };
+
+    return this.api.updateDeviceState(data)
+      .catch((err) => this.error(err));
   }
 
   async boostOnOff(options) {
@@ -120,7 +150,7 @@ class PaxCalimaDevice extends Homey.Device {
       /*
       * Go through all capabilities on the driver and remove those not supported by device.
       */
-      this.log('Removing boost capability for HeatDistributionMode fan.');
+      this.homey.log('Removing boost capability for HeatDistributionMode fan.');
       this.removeCapability('boost');
       this.setStoreValue('firstRun', false);
     }
@@ -136,9 +166,10 @@ class PaxCalimaDevice extends Homey.Device {
     }
 
     try {
+      // Get fan status
       await this.api.getStatus()
         .then((fanstate) => {
-          this.log(`[${this.getName()}]`, fanstate.toString());
+          this.homey.log(`[${this.getName()}]`, fanstate.toString());
           this.setCapabilityValue('measure_temperature', fanstate.Temp).catch(this.error);
           this.setCapabilityValue('measure_humidity', fanstate.Humidity).catch(this.error);
           this.setCapabilityValue('measure_luminance', fanstate.Light).catch(this.error);
@@ -148,13 +179,21 @@ class PaxCalimaDevice extends Homey.Device {
         })
         .catch(this.error);
 
+      // Get boost mode status
       if (mode !== 'HeatDistributionMode') {
         await this.api.getBoostMode()
           .then((boostmode) => {
-            this.log(`[${this.getName()}]`, boostmode.toString());
+            this.homey.log(`[${this.getName()}]`, boostmode.toString());
             this.setCapabilityValue('boost', !!boostmode.OnOff).catch(this.error);
           }).catch(this.error);
       }
+
+      // Get fan speed status
+      await this.api.getFanSpeed()
+        .then((fanspeed) => {
+          this.homey.log(`[${this.getName()}]`, fanspeed.toString());
+          this.setCapabilityValue('fanspeed', fanspeed.Trickle).catch(this.error);
+        }).catch(this.error);
     } catch (error) {
       this.error(error);
     }
@@ -164,15 +203,15 @@ class PaxCalimaDevice extends Homey.Device {
    * onAdded is called when the user adds the device, called just after pairing.
    */
   async onAdded() {
-    this.log('PAX Calima device has been added');
+    this.homey.log('PAX Calima device has been added');
     this.printInfo();
   }
 
   printInfo() {
-    this.log('name:', this.getName());
-    this.log('class:', this.getClass());
-    this.log('data', this.getData());
-    this.log('store', this.getStore());
+    this.homey.log('name:', this.getName());
+    this.homey.log('class:', this.getClass());
+    this.homey.log('data', this.getData());
+    this.homey.log('store', this.getStore());
   }
 
   /**
@@ -184,7 +223,7 @@ class PaxCalimaDevice extends Homey.Device {
    * @returns {Promise<string|void>} return a custom message that will be displayed
    */
   async onSettings({ oldSettings, newSettings, changedKeys }) {
-    this.log('PAX Calima device settings where changed');
+    this.homey.log('PAX Calima device settings where changed');
   }
 
   /**
@@ -193,7 +232,7 @@ class PaxCalimaDevice extends Homey.Device {
    * @param {string} name The new name
    */
   async onRenamed(name) {
-    this.log('PAX Calima device was renamed');
+    this.homey.log('PAX Calima device was renamed');
   }
 
   /**
@@ -209,7 +248,7 @@ class PaxCalimaDevice extends Homey.Device {
       this._peripheral.disconnect();
     }
 
-    this.log('PAX Calima device has been deleted');
+    this.homey.log('PAX Calima device has been deleted');
   }
 
 }

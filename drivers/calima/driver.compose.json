@@ -9,7 +9,8 @@
     "measure_humidity",
     "measure_luminance",
     "measure_rpm",
-    "mode"
+    "mode",
+    "fanspeed"
   ],
   "capabilitiesOptions": {
     "measure_temperature": {
