@@ -64,5 +64,8 @@
   },
   "1.1.11": {
     "en": "Add possibility to adjust fan speed"
+  },
+  "1.2.0": {
+    "en": "Automatically add the new fanspeed capability on older devices"
   }
 }
