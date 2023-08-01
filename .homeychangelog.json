@@ -61,5 +61,8 @@
   },
   "1.1.10": {
     "en": "Trying to correct a discovery bug"
+  },
+  "1.1.11": {
+    "en": "Add possibility to adjust fan speed"
   }
 }
