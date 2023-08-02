@@ -70,5 +70,8 @@
   },
   "1.2.1": {
     "en": "Update default speed for fan"
+  },
+  "1.2.2": {
+    "en": "Clean up the code"
   }
 }
