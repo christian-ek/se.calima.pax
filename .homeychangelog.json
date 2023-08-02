@@ -67,5 +67,8 @@
   },
   "1.2.0": {
     "en": "Automatically add the new fanspeed capability on older devices"
+  },
+  "1.2.1": {
+    "en": "Update default speed for fan"
   }
 }
