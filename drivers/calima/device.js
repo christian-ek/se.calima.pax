@@ -19,7 +19,7 @@ class PaxCalimaDevice extends Homey.Device {
     this.onSyncInterval = null; // Store the setInterval object
     this.isDeleted = false;
 
-    this.setUnavailable('Unable to connect to PAX Calima').catch(this.error);
+    this.setUnavailable('Unable to connect to PAX Calima').catch((error) => this.homey.error(error));
 
     if (this.hasCapability('fanspeed') === false) {
       // Add fanspeed capability if not already added. Added in 1.1.11
@@ -68,7 +68,7 @@ class PaxCalimaDevice extends Homey.Device {
 
       return Promise.resolve(true);
     } catch (error) {
-      this.error(error);
+      this.homey.error(error);
       return this.findLoop();
     }
   }
@@ -117,20 +117,8 @@ class PaxCalimaDevice extends Homey.Device {
       await this.api.setFanSpeed(2250, 1675, value);
       this.homey.log(`[${this.getName()}]`, 'Fanspeed set to', value, 'RPM');
     } catch (err) {
-      this.error(err);
+      this.homey.error(err);
     }
-  }
-
-  async updateCapabilityValues(capability) {
-    const { device } = this;
-
-    const data = {
-      temperatureSet: this.getCapabilityValue('target_temperature'),
-      id: device.id,
-    };
-
-    return this.api.updateDeviceState(data)
-      .catch((err) => this.error(err));
   }
 
   async boostOnOff(options) {
@@ -175,32 +163,32 @@ class PaxCalimaDevice extends Homey.Device {
       await this.api.getStatus()
         .then((fanstate) => {
           this.homey.log(`[${this.getName()}]`, fanstate.toString());
-          this.setCapabilityValue('measure_temperature', fanstate.Temp).catch(this.error);
-          this.setCapabilityValue('measure_humidity', fanstate.Humidity).catch(this.error);
-          this.setCapabilityValue('measure_luminance', fanstate.Light).catch(this.error);
-          this.setCapabilityValue('measure_rpm', fanstate.RPM).catch(this.error);
-          this.setCapabilityValue('mode', fanstate.Mode).catch(this.error);
+          this.setCapabilityValue('measure_temperature', fanstate.Temp).catch((error) => this.homey.error(error));
+          this.setCapabilityValue('measure_humidity', fanstate.Humidity).catch((error) => this.homey.error(error));
+          this.setCapabilityValue('measure_luminance', fanstate.Light).catch((error) => this.homey.error(error));
+          this.setCapabilityValue('measure_rpm', fanstate.RPM).catch((error) => this.homey.error(error));
+          this.setCapabilityValue('mode', fanstate.Mode).catch((error) => this.homey.error(error));
           this.setAvailable();
         })
-        .catch(this.error);
+        .catch((error) => this.homey.error(error));
 
       // Get boost mode status
       if (mode !== 'HeatDistributionMode') {
         await this.api.getBoostMode()
           .then((boostmode) => {
             this.homey.log(`[${this.getName()}]`, boostmode.toString());
-            this.setCapabilityValue('boost', !!boostmode.OnOff).catch(this.error);
-          }).catch(this.error);
+            this.setCapabilityValue('boost', !!boostmode.OnOff).catch((error) => this.homey.error(error));
+          }).catch((error) => this.homey.error(error));
       }
 
       // Get fan speed status
       await this.api.getFanSpeed()
         .then((fanspeed) => {
           this.homey.log(`[${this.getName()}]`, fanspeed.toString());
-          this.setCapabilityValue('fanspeed', fanspeed.Trickle).catch(this.error);
-        }).catch(this.error);
+          this.setCapabilityValue('fanspeed', fanspeed.Trickle).catch((error) => this.homey.error(error));
+        }).catch((error) => this.homey.error(error));
     } catch (error) {
-      this.error(error);
+      this.homey.error(error);
     }
   }
 

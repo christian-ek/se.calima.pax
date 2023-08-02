@@ -23,7 +23,12 @@ class PaxCalimaDriver extends Homey.Driver {
       return id;
     });
 
-    const advertisements = await this.homey.ble.discover().catch(this.error);
+    const advertisements = await this.homey.ble.discover().catch((error) => this.homey.error(error));
+
+    if (!advertisements) {
+      this.homey.log('No advertisements found during discovery.');
+      return;
+    }
 
     const filteredAdvertisements = advertisements
       .filter((a) => a.address.toUpperCase().startsWith('58:2B:DB')) // filter PAX Calima address
