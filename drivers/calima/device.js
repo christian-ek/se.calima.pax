@@ -114,7 +114,7 @@ class PaxCalimaDevice extends Homey.Device {
   async onCapabilitySetFanSpeed(value) {
     try {
       await this.setCapabilityValue('fanspeed', value);
-      await this.api.setFanSpeed(2100, 1675, value);
+      await this.api.setFanSpeed(2250, 1675, value);
       this.homey.log(`[${this.getName()}]`, 'Fanspeed set to', value, 'RPM');
     } catch (err) {
       this.error(err);
