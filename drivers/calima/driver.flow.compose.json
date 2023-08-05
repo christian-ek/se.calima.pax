@@ -1,0 +1,49 @@
+{
+  "actions": [
+    {
+      "id": "fanspeed",
+      "title": {
+        "en": "Set trickle fan speed",
+        "sv": "Sätt basventilationshastighet"
+      },
+      "titleFormatted": {
+        "en": "Set trickle fan speed to [[speed]] RPM",
+        "sv": "Sätt basventilationshastighet till [[speed]] RPM"
+      },
+      "hint": {
+        "en": "Adjust the fan speed"
+      },
+      "args": [
+        {
+          "type": "number",
+          "name": "speed",
+          "title": {
+            "en": "Fan speed",
+            "sv": "Fläkthastighet"
+          },
+          "placeholder": {
+            "en": "RPM"
+          },
+          "min": 0,
+          "max": 2000,
+          "step": 25
+        }
+      ]
+    },
+    {
+      "id": "boost_on",
+      "title": {
+          "en": "Turn boost on",
+          "sv": "Slå på boost"
+      },
+      "duration": true
+    },
+    {
+      "id": "boost_off",
+      "title": {
+          "en": "Turn boost off",
+          "sv": "Slå av boost"
+      }
+    }
+  ]
+}

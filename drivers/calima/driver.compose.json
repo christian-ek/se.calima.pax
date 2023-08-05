@@ -10,11 +10,31 @@
     "measure_luminance",
     "measure_rpm",
     "mode",
-    "fanspeed"
+    "fanspeed.trickle",
+    "fanspeed.humidity",
+    "fanspeed.light"
   ],
   "capabilitiesOptions": {
     "measure_temperature": {
       "decimals": 0
+    },
+    "fanspeed.trickle": {
+      "title": {
+        "en": "Trickle ventilation",
+        "sv": "Basventilation"
+      }
+    }
+    ,"fanspeed.humidity": {
+      "title": {
+        "en": "Humidity ventilation",
+        "sv": "Luftfuktighetsventilation"
+      }
+    }
+    ,"fanspeed.light": {
+      "title": {
+        "en": "Light ventilation",
+        "sv": "Ljusventilation"
+      }
     }
   },
   "platforms": [

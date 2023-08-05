@@ -21,9 +21,17 @@ class PaxCalimaDevice extends Homey.Device {
 
     this.setUnavailable('Unable to connect to PAX Calima').catch((error) => this.homey.error(error));
 
-    if (this.hasCapability('fanspeed') === false) {
-      // Add fanspeed capability if not already added. Added in 1.1.11
-      await this.addCapability('fanspeed');
+    if (this.hasCapability('fanspeed.trickle') === false) {
+      // Add fanspeed subcapabilities if not already added.
+      await this.addCapability('fanspeed.trickle');
+      await this.addCapability('fanspeed.humidity');
+      await this.addCapability('fanspeed.light');
+    }
+
+    if (this.hasCapability('fanspeed') === true) {
+      // Fanspeed capability is split into three subcapabilities,
+      // so remove the maincapability.
+      await this.removeCapability('fanspeed');
     }
 
     if (mode !== 'HeatDistributionMode') {
@@ -36,29 +44,23 @@ class PaxCalimaDevice extends Homey.Device {
         });
       });
     }
+
+    this.registerCapabilityListener('fanspeed.trickle', (speed) => this.onCapabilitySetFanSpeed(speed, 'trickle'));
+    this.registerCapabilityListener('fanspeed.humidity', (speed) => this.onCapabilitySetFanSpeed(speed, 'humidity'));
+    this.registerCapabilityListener('fanspeed.light', (speed) => this.onCapabilitySetFanSpeed(speed, 'light'));
+
     this.find().then(this._onDeviceInit.bind(this));
-
-    this.registerCapabilityListener('fanspeed', this.onCapabilitySetFanSpeed.bind(this));
-
-    // Register action flow cards
-    const fanSpeedAction = this.homey.flow.getActionCard('fanspeed');
-    fanSpeedAction.registerRunListener(async (args, state) => {
-      this.onCapabilitySetFanSpeed(args.speed);
-    });
   }
 
   async findLoop() {
-    if (this.isDeleted) {
-      // If the device has been deleted, exit the loop immediately
-      return;
-    }
-
-    this.homey.log('Trying to find again in', this.delay ? '30s' : '10s');
-    setTimeout(async () => {
-      this.delay = true;
-      await this.find();
-      this.findLoop(); // Continue the loop by calling findLoop() recursively after the timeout
-    }, this.delay ? 30000 : 10000);
+    return new Promise((resolve) => {
+      this.log('Trying to find again in', this.delay ? '30s' : '10s');
+      setTimeout(async () => {
+        this.delay = true;
+        await this.find();
+        resolve();
+      }, this.delay ? 30000 : 10000);
+    });
   }
 
   async find() {
@@ -68,7 +70,7 @@ class PaxCalimaDevice extends Homey.Device {
 
       return Promise.resolve(true);
     } catch (error) {
-      this.homey.error(error);
+      this.error(error);
       return this.findLoop();
     }
   }
@@ -111,11 +113,25 @@ class PaxCalimaDevice extends Homey.Device {
     this.onSyncInterval = setInterval(this.onSync, this.constructor.SYNC_INTERVAL);
   }
 
-  async onCapabilitySetFanSpeed(value) {
+  async onCapabilitySetFanSpeed(speed, capability) {
     try {
-      await this.setCapabilityValue('fanspeed', value);
-      await this.api.setFanSpeed(2250, 1675, value);
-      this.homey.log(`[${this.getName()}]`, 'Fanspeed set to', value, 'RPM');
+      const currentSpeeds = await this.api.getFanSpeed();
+      await this.setCapabilityValue(`fanspeed.${capability}`, speed);
+
+      switch (capability) {
+        case 'trickle':
+          await this.api.setFanSpeed(currentSpeeds.Humidity, currentSpeeds.Light, speed);
+          break;
+        case 'humidity':
+          await this.api.setFanSpeed(speed, currentSpeeds.Light, currentSpeeds.Trickle);
+          break;
+        case 'light':
+          await this.api.setFanSpeed(currentSpeeds.Humidity, speed, currentSpeeds.Trickle);
+          break;
+        default:
+          this.homey.error('Unrecognized capability');
+      }
+      this.homey.log(`[${this.getName()}]`, `Fanspeed (${capability}) set to`, speed, 'RPM');
     } catch (err) {
       this.homey.error(err);
     }
@@ -185,7 +201,9 @@ class PaxCalimaDevice extends Homey.Device {
       await this.api.getFanSpeed()
         .then((fanspeed) => {
           this.homey.log(`[${this.getName()}]`, fanspeed.toString());
-          this.setCapabilityValue('fanspeed', fanspeed.Trickle).catch((error) => this.homey.error(error));
+          this.setCapabilityValue('fanspeed.trickle', fanspeed.Trickle).catch((error) => this.homey.error(error));
+          this.setCapabilityValue('fanspeed.humidity', fanspeed.Humidity).catch((error) => this.homey.error(error));
+          this.setCapabilityValue('fanspeed.light', fanspeed.Light).catch((error) => this.homey.error(error));
         }).catch((error) => this.homey.error(error));
     } catch (error) {
       this.homey.error(error);

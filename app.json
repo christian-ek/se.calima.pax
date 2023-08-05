@@ -57,51 +57,17 @@
   "flow": {
     "actions": [
       {
-        "id": "boost_off",
-        "title": {
-          "en": "Turn boost off",
-          "sv": "Stäng av boost"
-        },
-        "titleFormatted": {
-          "en": "Turn boost off",
-          "sv": "Stäng av boost"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=calima"
-          }
-        ]
-      },
-      {
-        "id": "boost_on",
-        "title": {
-          "en": "Turn boost on",
-          "sv": "Slå på boost"
-        },
-        "titleFormatted": {
-          "en": "Turn boost on",
-          "sv": "Slå på boost"
-        },
-        "duration": true,
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=calima"
-          }
-        ]
-      },
-      {
         "id": "fanspeed",
         "title": {
-          "en": "Set fan speed",
-          "sv": "Sätt fläkthastighet"
+          "en": "Set trickle fan speed",
+          "sv": "Sätt basventilationshastighet"
         },
         "titleFormatted": {
-          "en": "Set fan speed to [[speed]] RPM",
-          "sv": "Sätt fläkthastighet till [[speed]] RPM"
+          "en": "Set trickle fan speed to [[speed]] RPM",
+          "sv": "Sätt basventilationshastighet till [[speed]] RPM"
+        },
+        "hint": {
+          "en": "Adjust the fan speed"
         },
         "args": [
           {
@@ -117,12 +83,40 @@
               "sv": "Fläkthastighet"
             },
             "placeholder": {
-              "en": "RPM",
-              "sv": "RPM"
+              "en": "RPM"
             },
             "min": 0,
             "max": 2000,
             "step": 25
+          }
+        ]
+      },
+      {
+        "id": "boost_on",
+        "title": {
+          "en": "Turn boost on",
+          "sv": "Slå på boost"
+        },
+        "duration": true,
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=calima"
+          }
+        ]
+      },
+      {
+        "id": "boost_off",
+        "title": {
+          "en": "Turn boost off",
+          "sv": "Slå av boost"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=calima"
           }
         ]
       }
@@ -141,11 +135,31 @@
         "measure_luminance",
         "measure_rpm",
         "mode",
-        "fanspeed"
+        "fanspeed.trickle",
+        "fanspeed.humidity",
+        "fanspeed.light"
       ],
       "capabilitiesOptions": {
         "measure_temperature": {
           "decimals": 0
+        },
+        "fanspeed.trickle": {
+          "title": {
+            "en": "Trickle ventilation",
+            "sv": "Basventilation"
+          }
+        },
+        "fanspeed.humidity": {
+          "title": {
+            "en": "Humidity ventilation",
+            "sv": "Luftfuktighetsventilation"
+          }
+        },
+        "fanspeed.light": {
+          "title": {
+            "en": "Light ventilation",
+            "sv": "Ljusventilation"
+          }
         }
       },
       "platforms": [

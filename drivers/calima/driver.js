@@ -13,6 +13,12 @@ class PaxCalimaDriver extends Homey.Driver {
     this.onDiscoverInterval = setInterval(() => this.onDiscover(), this.constructor.DISCOVER_INTERVAL);
     this.onDiscover();
     this.log('Pax Calima driver has been initiated');
+
+    // Register action flow cards
+    const trickleFanSpeedAction = this.homey.flow.getActionCard('fanspeed');
+    trickleFanSpeedAction.registerRunListener(async (args) => {
+      await args.device.onCapabilitySetFanSpeed(args.speed, 'trickle');
+    });
   }
 
   async onDiscover() {
