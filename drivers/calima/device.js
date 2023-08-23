@@ -184,8 +184,8 @@ class PaxCalimaDevice extends Homey.Device {
           this.setCapabilityValue('measure_luminance', fanstate.Light).catch((error) => this.homey.error(error));
           this.setCapabilityValue('measure_rpm', fanstate.RPM).catch((error) => this.homey.error(error));
           this.setCapabilityValue('mode', fanstate.Mode).catch((error) => this.homey.error(error));
-          this.setAvailable();
         })
+        .then(() => this.setAvailable().catch((error) => this.homey.error(error)))
         .catch((error) => this.homey.error(error));
 
       // Get boost mode status

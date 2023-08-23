@@ -236,7 +236,6 @@
       "uiComponent": "slider",
       "getable": true,
       "setable": true,
-      "insights": true,
       "units": {
         "en": "RPM",
         "sv": "RPM"
