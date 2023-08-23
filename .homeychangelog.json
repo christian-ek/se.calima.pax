@@ -76,5 +76,8 @@
   },
   "1.2.3": {
     "en": "Add humidity/light ventilation speed slider"
+  },
+  "1.2.4": {
+    "en": "Minor change in order to catch an annoying error."
   }
 }
