@@ -1,0 +1,20 @@
+{
+  "title": {
+    "en": "Boost has been deactivated",
+    "sv": "Boost har avaktiverats"
+  },
+  "hint": {
+    "en": "This flowcard triggers when boost is deactivated.",
+    "sv": "Det här flödeskortet triggas när boost har avaktiverats."
+  },
+  "platforms": [
+    "local"
+  ],
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=calima"
+    }
+  ]
+}

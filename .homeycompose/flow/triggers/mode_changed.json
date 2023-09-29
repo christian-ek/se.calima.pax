@@ -1,0 +1,21 @@
+{
+  "title": {
+    "en": "Mode has changed",
+    "sv": "Läge har ändrats"
+  },
+  "hint": {
+    "en": "This flowcard triggers when the mode has changed.",
+    "sv": "Det här flödeskortet triggas när läge har ändrats."
+  },
+  "platforms": [
+    "local"
+  ],
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=calima"
+    }
+  ]
+}
+

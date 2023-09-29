@@ -55,6 +55,71 @@
   "brandColor": "#FF3F32",
   "source": "https://github.com/christian-ek/se.calima.pax",
   "flow": {
+    "triggers": [
+      {
+        "title": {
+          "en": "Boost has been deactivated",
+          "sv": "Boost har avaktiverats"
+        },
+        "hint": {
+          "en": "This flowcard triggers when boost is deactivated.",
+          "sv": "Det här flödeskortet triggas när boost har avaktiverats."
+        },
+        "platforms": [
+          "local"
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=calima"
+          }
+        ],
+        "id": "boost_false"
+      },
+      {
+        "title": {
+          "en": "Boost has been activated",
+          "sv": "Boost har aktiverats"
+        },
+        "hint": {
+          "en": "This flowcard triggers when boost is activated.",
+          "sv": "Det här flödeskortet triggas när boost har aktiverats."
+        },
+        "platforms": [
+          "local"
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=calima"
+          }
+        ],
+        "id": "boost_true"
+      },
+      {
+        "title": {
+          "en": "Mode has changed",
+          "sv": "Läge har ändrats"
+        },
+        "hint": {
+          "en": "This flowcard triggers when the mode has changed.",
+          "sv": "Det här flödeskortet triggas när läge har ändrats."
+        },
+        "platforms": [
+          "local"
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=calima"
+          }
+        ],
+        "id": "mode_changed"
+      }
+    ],
     "actions": [
       {
         "id": "fanspeed",

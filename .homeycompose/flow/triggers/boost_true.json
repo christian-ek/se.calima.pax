@@ -1,0 +1,20 @@
+{
+  "title": {
+    "en": "Boost has been activated",
+    "sv": "Boost har aktiverats"
+  },
+  "hint": {
+    "en": "This flowcard triggers when boost is activated.",
+    "sv": "Det här flödeskortet triggas när boost har aktiverats."
+  },
+  "platforms": [
+    "local"
+  ],
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=calima"
+    }
+  ]
+}
