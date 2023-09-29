@@ -79,5 +79,8 @@
   },
   "1.2.4": {
     "en": "Minor change in order to catch an annoying error."
+  },
+  "1.2.5": {
+    "en": "Add some new flow cards"
   }
 }
