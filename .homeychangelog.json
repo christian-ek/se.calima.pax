@@ -82,5 +82,8 @@
   },
   "1.2.5": {
     "en": "Add some new flow cards"
+  },
+  "1.2.6": {
+    "en": "Add condition flow cards"
   }
 }
