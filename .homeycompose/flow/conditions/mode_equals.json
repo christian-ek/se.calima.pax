@@ -1,0 +1,51 @@
+{
+  "title": {
+    "en": "Mode !{{is|isn't}}",
+    "sv": "Läge !{{är|är inte}}"
+  },
+  "titleFormatted": {
+    "en": "Mode !{{is|isn't}} [[mode]]",
+    "sv": "Läge !{{är|är inte}} [[mode]]"
+  },
+  "args": [
+    {
+      "name": "device",
+      "type": "device",
+      "filter": "driver_id=calima"
+    },
+    {
+      "name": "mode",
+      "type": "dropdown",
+      "values": [
+        {
+          "id": "boost",
+          "title": {
+            "en": "Boost",
+            "sv": "Boost"
+            }
+        },
+        {
+          "id": "trickle",
+          "title": {
+            "en": "Trickle ventilation",
+            "sv": "Trickle ventilation"
+          }
+        },
+        {
+          "id": "light",
+          "title": {
+            "en": "Light ventilation",
+            "sv": "Light ventilation"
+          }
+        },
+        {
+          "id": "humidity",
+          "title": {
+            "en": "Humidity ventilation",
+            "sv": "Humidity ventilation"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "title": {
+    "en": "Boost is !{{turned on|turned off}}",
+    "sv": "Boost är !{{aktiverad|avaktiverad}}"
+  },
+  "hint": {
+    "en": "Checks if boost is turned on or off.",
+    "sv": "Kollar om boost är aktiverad eller avaktiverad."
+  },
+  "platforms": [
+    "local"
+  ],
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=calima"
+    }
+  ]
+}

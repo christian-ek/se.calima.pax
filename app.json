@@ -123,12 +123,12 @@
     "conditions": [
       {
         "title": {
-          "en": "Boost is turned off",
-          "sv": "Boost är avaktiverad"
+          "en": "Boost is !{{turned on|turned off}}",
+          "sv": "Boost är !{{aktiverad|avaktiverad}}"
         },
         "hint": {
-          "en": "Checks if boost is turned off.",
-          "sv": "Kollar om boost är avaktiverad."
+          "en": "Checks if boost is turned on or off.",
+          "sv": "Kollar om boost är aktiverad eller avaktiverad."
         },
         "platforms": [
           "local"
@@ -140,28 +140,59 @@
             "filter": "driver_id=calima"
           }
         ],
-        "id": "boost_false"
+        "id": "boost_on"
       },
       {
         "title": {
-          "en": "Boost is turned on",
-          "sv": "Boost är aktiverad"
+          "en": "Mode !{{is|isn't}}",
+          "sv": "Läge !{{är|är inte}}"
         },
-        "hint": {
-          "en": "Checks if boost is turned on.",
-          "sv": "Kollar om boost är aktiverad."
+        "titleFormatted": {
+          "en": "Mode !{{is|isn't}} [[mode]]",
+          "sv": "Läge !{{är|är inte}} [[mode]]"
         },
-        "platforms": [
-          "local"
-        ],
         "args": [
           {
-            "type": "device",
             "name": "device",
+            "type": "device",
             "filter": "driver_id=calima"
+          },
+          {
+            "name": "mode",
+            "type": "dropdown",
+            "values": [
+              {
+                "id": "boost",
+                "title": {
+                  "en": "Boost",
+                  "sv": "Boost"
+                }
+              },
+              {
+                "id": "trickle",
+                "title": {
+                  "en": "Trickle ventilation",
+                  "sv": "Trickle ventilation"
+                }
+              },
+              {
+                "id": "light",
+                "title": {
+                  "en": "Light ventilation",
+                  "sv": "Light ventilation"
+                }
+              },
+              {
+                "id": "humidity",
+                "title": {
+                  "en": "Humidity ventilation",
+                  "sv": "Humidity ventilation"
+                }
+              }
+            ]
           }
         ],
-        "id": "boost_true"
+        "id": "mode_equals"
       }
     ],
     "actions": [

@@ -34,6 +34,20 @@ class Pax extends Homey.App {
         },
       );
     });
+
+    // condition cards
+    this.homey.flow.getConditionCard('mode_equals')
+      .registerRunListener(async (args) => {
+        return (args.device.getCapabilityValue('mode') === args.mode);
+      });
+
+    this.homey.flow.getConditionCard('boost_on')
+      .registerRunListener(async (args) => {
+        if (args.device) {
+          return args.device.getCapabilityValue('boost');
+        }
+        return false;
+      });
   }
 
 }
