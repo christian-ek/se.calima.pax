@@ -88,5 +88,8 @@
   },
   "1.2.7": {
     "en": "Add flow card"
+  },
+  "1.2.8": {
+    "en": "Fix condition cards"
   }
 }
