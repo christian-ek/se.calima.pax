@@ -18,28 +18,28 @@
       "type": "dropdown",
       "values": [
         {
-          "id": "boost",
+          "id": "Boost",
           "title": {
             "en": "Boost",
             "sv": "Boost"
             }
         },
         {
-          "id": "trickle",
+          "id": "Trickle ventilation",
           "title": {
             "en": "Trickle ventilation",
             "sv": "Trickle ventilation"
           }
         },
         {
-          "id": "light",
+          "id": "Light ventilation",
           "title": {
             "en": "Light ventilation",
             "sv": "Light ventilation"
           }
         },
         {
-          "id": "humidity",
+          "id": "Humidity ventilation",
           "title": {
             "en": "Humidity ventilation",
             "sv": "Humidity ventilation"
