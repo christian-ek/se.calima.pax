@@ -397,7 +397,8 @@
         "en": "RPM",
         "sv": "RPM"
       },
-      "icon": "/assets/icons/boost.svg"
+      "icon": "/assets/icons/boost.svg",
+      "insights": true
     },
     "mode": {
       "type": "string",

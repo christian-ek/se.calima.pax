@@ -1,17 +1,15 @@
-'use strict';
+export default class BoostMode {
+  OnOff: boolean;
+  Speed: number;
+  Seconds: number;
 
-class BoostMode {
-
-  constructor(onOff, speed, seconds) {
+  constructor(onOff: boolean, speed: number, seconds: number) {
     this.OnOff = onOff;
     this.Speed = speed;
     this.Seconds = seconds;
   }
 
-  toString() {
+  toString(): string {
     return `BoostMode: OnOff = ${this.OnOff}, Speed = ${this.Speed}, Seconds = ${this.Seconds}`;
   }
-
 }
-
-module.exports = BoostMode;

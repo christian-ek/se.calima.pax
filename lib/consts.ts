@@ -1,6 +1,4 @@
-'use strict';
-
-module.exports = Object.freeze({
+export const characteristics: Record<string, string> = Object.freeze({
   APPEARANCE: '00002a0100001000800000805f9b34fb',
   AUTOMATIC_CYCLES: 'f508408a508b41c6aa5761d1fd0d5c39',
   BASIC_VENTILATION: 'faa49e09a79c4725b197bdc57c67dc32',
@@ -27,4 +25,11 @@ module.exports = Object.freeze({
   STATUS: '25a824ad30214de99f2f60cf8d17bded',
   TEMP_HEAT_DISTRIBUTOR: 'a22eae12dba849f39c691721dcff1d96',
   TIME_FUNCTIONS: '49c616de02b14b67b23790f66793a6f2',
+});
+
+export const serviceIds: Record<string, string> = Object.freeze({
+  DISCOVERY_SERVICE_UUID: '0000180a00001000800000805f9b34fb',
+  BOOST: 'c119e8580531468196745a11f0e53bb4',
+  PIN_SERVICE_UUID: 'e6834e4b7b3a48e691e4f1d005f564d3',
+  STATUS_SERVICE_UUID: '1a46a853e5ed4696bac070e346884a26',
 });

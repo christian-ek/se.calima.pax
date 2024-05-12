@@ -23,26 +23,22 @@
         "en": "Trickle ventilation",
         "sv": "Basventilation"
       }
-    }
-    ,"fanspeed.humidity": {
+    },
+    "fanspeed.humidity": {
       "title": {
         "en": "Humidity ventilation",
         "sv": "Luftfuktighetsventilation"
       }
-    }
-    ,"fanspeed.light": {
+    },
+    "fanspeed.light": {
       "title": {
         "en": "Light ventilation",
         "sv": "Ljusventilation"
       }
     }
   },
-  "platforms": [
-    "local"
-  ],
-  "connectivity": [
-    "ble"
-  ],
+  "platforms": ["local"],
+  "connectivity": ["ble"],
   "images": {
     "small": "{{driverAssetsPath}}/images/small.png",
     "large": "{{driverAssetsPath}}/images/large.png",
