@@ -1,9 +1,11 @@
 {
   "id": "se.pax.calima",
-  "version": "1.2.9",
+  "version": "2.0.0",
   "compatibility": ">=5.0.0",
   "sdk": 3,
-  "platforms": ["local"],
+  "platforms": [
+    "local"
+  ],
   "name": {
     "en": "Pax Calima",
     "sv": "Pax Calima"
@@ -12,8 +14,12 @@
     "en": "Pax helps your residence breathe.",
     "sv": "Pax hjälper din bostad att andas."
   },
-  "category": ["climate"],
-  "permissions": ["homey:wireless:ble"],
+  "category": [
+    "climate"
+  ],
+  "permissions": [
+    "homey:wireless:ble"
+  ],
   "images": {
     "small": "/assets/images/small.png",
     "large": "/assets/images/large.png",
@@ -31,8 +37,18 @@
     }
   },
   "tags": {
-    "en": ["Pax", "Calima", "Fan", "Bathroom"],
-    "sv": ["Pax", "Calima", "Fläkt", "Badrum"]
+    "en": [
+      "Pax",
+      "Calima",
+      "Fan",
+      "Bathroom"
+    ],
+    "sv": [
+      "Pax",
+      "Calima",
+      "Fläkt",
+      "Badrum"
+    ]
   },
   "support": "mailto:hi@christianek.io",
   "brandColor": "#FF3F32",

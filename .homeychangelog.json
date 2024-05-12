@@ -94,5 +94,8 @@
   },
   "1.2.9": {
     "en": "Update contact information"
+  },
+  "2.0.0": {
+    "en": "Moved to Typescript, changed from keeping connection permanently to connect each time."
   }
 }
