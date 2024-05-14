@@ -97,5 +97,8 @@
   },
   "2.0.0": {
     "en": "Moved to Typescript, changed from keeping connection permanently to connect each time."
+  },
+  "2.0.1": {
+    "en": "Refactor some code"
   }
 }
