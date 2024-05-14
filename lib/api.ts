@@ -33,7 +33,10 @@ class PaxApi extends Homey.SimpleClass {
 
   async disconnect(): Promise<void> {
     try {
-      await this.peripheral.disconnect();
+      const isConnected = await this.peripheral.assertConnected();
+      if (isConnected) {
+        await this.peripheral.disconnect();
+      }
     } catch (error) {
       throw new Error(`Unable to disconnect from peripheral: ${error}`);
     }

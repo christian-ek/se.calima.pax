@@ -21,7 +21,6 @@ class PaxDevice extends Homey.Device {
 
   async onInit(): Promise<void> {
     this.registerCapabilityListeners();
-
     this.onSyncInterval = setInterval(() => this.onSync(), PaxDevice.SYNC_INTERVAL);
   }
 
@@ -53,17 +52,21 @@ class PaxDevice extends Homey.Device {
     // Check if this is the first run and handle accordingly
     if (firstRun) await this.firstRun(mode);
 
+    let api: PaxApi | undefined;
     try {
-      await this.updateDeviceState(mode);
+      api = await this.connectToDevice();
+      await this.updateDeviceState(api, mode);
     } catch (error) {
       this.homey.error(`Error during onSync operation: ${error}`);
     } finally {
+      if (api) {
+        await api.disconnect();
+      }
       this.isSyncing = false;
     }
   }
 
-  private async updateDeviceState(mode: string): Promise<void> {
-    const api: PaxApi = await this.connectToDevice();
+  private async updateDeviceState(api: PaxApi, mode: string): Promise<void> {
     const fanState = await api.getStatus();
     const fanSpeed = await api.getFanSpeed();
     this.homey.log(`[${this.getName()}] Fan state: ${fanState.toString()}`);
@@ -86,8 +89,6 @@ class PaxDevice extends Homey.Device {
       this.homey.log(`[${this.getName()}] BoostMode: ${boostMode.toString()}`);
       await this.setCapabilityValue('boost', boostMode.OnOff).catch((error) => this.homey.error(`Error updating boost mode: ${error}`));
     }
-
-    api.disconnect();
   }
 
   private async connectToDevice(): Promise<PaxApi> {
@@ -103,44 +104,56 @@ class PaxDevice extends Homey.Device {
     } catch (error) {
       throw new Error(`Failed to connect to device: ${error}`);
     }
-
   }
 
   async onCapabilitySetFanSpeed(speed: number, capability: 'trickle' | 'humidity' | 'light'): Promise<void> {
-    const api: PaxApi = await this.connectToDevice();
-    const currentSpeeds = await api.getFanSpeed();
-    await this.setCapabilityValue(`fanspeed.${capability}`, speed);
+    let api: PaxApi | undefined;
+    try {
+      api = await this.connectToDevice();
+      const currentSpeeds = await api.getFanSpeed();
+      await this.setCapabilityValue(`fanspeed.${capability}`, speed);
 
-    switch (capability) {
-      case 'trickle':
-        await api.setFanSpeed(currentSpeeds.Humidity, currentSpeeds.Light, speed);
-        break;
-      case 'humidity':
-        await api.setFanSpeed(speed, currentSpeeds.Light, currentSpeeds.Trickle);
-        break;
-      case 'light':
-        await api.setFanSpeed(currentSpeeds.Humidity, speed, currentSpeeds.Trickle);
-        break;
-      default:
-        this.homey.error('Unrecognized capability');
+      switch (capability) {
+        case 'trickle':
+          await api.setFanSpeed(currentSpeeds.Humidity, currentSpeeds.Light, speed);
+          break;
+        case 'humidity':
+          await api.setFanSpeed(speed, currentSpeeds.Light, currentSpeeds.Trickle);
+          break;
+        case 'light':
+          await api.setFanSpeed(currentSpeeds.Humidity, speed, currentSpeeds.Trickle);
+          break;
+        default:
+          this.homey.error('Unrecognized capability');
+      }
+      this.homey.log(`[${this.getName()}] Fanspeed (${capability}) set to ${speed} RPM`);
+    } catch (err) {
+      this.homey.error(err);
+    } finally {
+      if (api) {
+        await api.disconnect();
+      }
     }
-    this.homey.log(`[${this.getName()}] Fanspeed (${capability}) set to ${speed} RPM`);
-
-    await api.disconnect();
   }
 
   async boostOnOff(options: BoostOptions): Promise<void> {
-    const api: PaxApi = await this.connectToDevice();
-
-    let func: Promise<void>;
-    if (options.on) {
-      func = api.startBoost(options.duration || PaxDevice.DEFAULT_BOOST_DURATION);
-    } else {
-      func = api.stopBoost();
+    let api: PaxApi | undefined;
+    try {
+      api = await this.connectToDevice();
+      let func: Promise<void>;
+      if (options.on) {
+        func = api.startBoost(options.duration || PaxDevice.DEFAULT_BOOST_DURATION);
+      } else {
+        func = api.stopBoost();
+      }
+      await func;
+    } catch (err) {
+      this.homey.error(`Error changing boost mode: ${err}`);
+    } finally {
+      if (api) {
+        await api.disconnect();
+      }
     }
-    await func;
-
-    await api.disconnect();
   }
 
   async firstRun(mode: string): Promise<void> {
@@ -180,9 +193,7 @@ class PaxDevice extends Homey.Device {
    */
   onDeleted() {
     const { onSyncInterval } = this;
-
     clearInterval(onSyncInterval); // Clear the onSync interval to stop further execution
-
     this.homey.log('PAX Calima device has been deleted');
   }
 }
