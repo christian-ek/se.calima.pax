@@ -42,14 +42,13 @@ class PaxDevice extends Homey.Device {
 
   async onSync(): Promise<void> {
     if (this.isSyncing) {
-      this.homey.log('Sync operation already in progress, skipping this interval.');
+      this.log('Sync operation already in progress, skipping this interval.');
       return;
     }
 
     this.isSyncing = true;
     const { firstRun, mode } = this.getStore();
 
-    // Check if this is the first run and handle accordingly
     if (firstRun) await this.firstRun(mode);
 
     let api: PaxApi | undefined;
@@ -57,7 +56,11 @@ class PaxDevice extends Homey.Device {
       api = await this.connectToDevice();
       await this.updateDeviceState(api, mode);
     } catch (error) {
-      this.homey.error(`Error during onSync operation: ${error}`);
+      if (error instanceof Error) {
+        this.error(`Error during onSync operation: ${error.message}`);
+      } else {
+        this.error(`Error during onSync operation: ${String(error)}`);
+      }
     } finally {
       if (api) {
         await api.disconnect();
@@ -67,27 +70,34 @@ class PaxDevice extends Homey.Device {
   }
 
   private async updateDeviceState(api: PaxApi, mode: string): Promise<void> {
-    const fanState = await api.getStatus();
-    const fanSpeed = await api.getFanSpeed();
-    this.homey.log(`[${this.getName()}] Fan state: ${fanState.toString()}`);
-    this.homey.log(`[${this.getName()}] Fanspeed: ${fanSpeed.toString()}`);
+    try {
+      const fanState = await api.getStatus();
+      const fanSpeed = await api.getFanSpeed();
+      this.log(`Fan state: ${fanState.toString()}`);
+      this.log(`Fanspeed: ${fanSpeed.toString()}`);
 
-    await Promise.all([
-      this.setCapabilityValue('measure_temperature', fanState.Temp),
-      this.setCapabilityValue('measure_humidity', fanState.Humidity),
-      this.setCapabilityValue('measure_luminance', fanState.Light),
-      this.setCapabilityValue('measure_rpm', fanState.RPM),
-      this.setCapabilityValue('mode', fanState.Mode),
-      this.setCapabilityValue('fanspeed.trickle', fanSpeed.Trickle),
-      this.setCapabilityValue('fanspeed.humidity', fanSpeed.Humidity),
-      this.setCapabilityValue('fanspeed.light', fanSpeed.Light),
-    ]).catch((error) => this.homey.error(`Error updating capabilities: ${error}`));
+      await Promise.all([
+        this.setCapabilityValue('measure_temperature', fanState.Temp),
+        this.setCapabilityValue('measure_humidity', fanState.Humidity),
+        this.setCapabilityValue('measure_luminance', fanState.Light),
+        this.setCapabilityValue('measure_rpm', fanState.RPM),
+        this.setCapabilityValue('mode', fanState.Mode),
+        this.setCapabilityValue('fanspeed.trickle', fanSpeed.Trickle),
+        this.setCapabilityValue('fanspeed.humidity', fanSpeed.Humidity),
+        this.setCapabilityValue('fanspeed.light', fanSpeed.Light),
+      ]);
 
-    // Check and update boost mode status if applicable
-    if (!FanMode.isHeatDistributionMode(mode)) {
-      const boostMode = await api.getBoostMode();
-      this.homey.log(`[${this.getName()}] BoostMode: ${boostMode.toString()}`);
-      await this.setCapabilityValue('boost', boostMode.OnOff).catch((error) => this.homey.error(`Error updating boost mode: ${error}`));
+      if (!FanMode.isHeatDistributionMode(mode)) {
+        const boostMode = await api.getBoostMode();
+        this.log(`BoostMode: ${boostMode.toString()}`);
+        await this.setCapabilityValue('boost', boostMode.OnOff);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        this.error(`Error updating device state: ${error.message}`);
+      } else {
+        this.error(`Error updating device state: ${String(error)}`);
+      }
     }
   }
 
@@ -102,7 +112,11 @@ class PaxDevice extends Homey.Device {
       await peripheral.assertConnected();
       return new PaxApi(pin, peripheral, this.homey);
     } catch (error) {
-      throw new Error(`Failed to connect to device: ${error}`);
+      if (error instanceof Error) {
+        throw new Error(`Failed to connect to device: ${error.message}`);
+      } else {
+        throw new Error(`Failed to connect to device: ${String(error)}`);
+      }
     }
   }
 
@@ -124,11 +138,15 @@ class PaxDevice extends Homey.Device {
           await api.setFanSpeed(currentSpeeds.Humidity, speed, currentSpeeds.Trickle);
           break;
         default:
-          this.homey.error('Unrecognized capability');
+          this.error(`Unrecognized capability: ${capability}`);
       }
-      this.homey.log(`[${this.getName()}] Fanspeed (${capability}) set to ${speed} RPM`);
-    } catch (err) {
-      this.homey.error(err);
+      this.log(`Fanspeed (${capability}) set to ${speed} RPM`);
+    } catch (error) {
+      if (error instanceof Error) {
+        this.error(`Error setting fan speed for ${capability}: ${error.message}`);
+      } else {
+        this.error(`Error setting fan speed for ${capability}: ${String(error)}`);
+      }
     } finally {
       if (api) {
         await api.disconnect();
@@ -147,8 +165,12 @@ class PaxDevice extends Homey.Device {
         func = api.stopBoost();
       }
       await func;
-    } catch (err) {
-      this.homey.error(`Error changing boost mode: ${err}`);
+    } catch (error) {
+      if (error instanceof Error) {
+        this.error(`Error changing boost mode: ${error.message}`);
+      } else {
+        this.error(`Error changing boost mode: ${String(error)}`);
+      }
     } finally {
       if (api) {
         await api.disconnect();
@@ -158,7 +180,7 @@ class PaxDevice extends Homey.Device {
 
   async firstRun(mode: string): Promise<void> {
     if (FanMode.isHeatDistributionMode(mode)) {
-      this.homey.log('Removing boost capability for Heat Distribution Mode fan.');
+      this.log('Removing boost capability for Heat Distribution Mode fan.');
       await this.removeCapability('boost');
       await this.setStoreValue('firstRun', false);
     }
@@ -168,15 +190,15 @@ class PaxDevice extends Homey.Device {
    * onAdded is called when the user adds the device, called just after pairing.
    */
   async onAdded() {
-    this.homey.log('PAX Calima device has been added');
+    this.log('Device has been added');
     this.printInfo();
   }
 
   printInfo() {
-    this.homey.log('name:', this.getName());
-    this.homey.log('class:', this.getClass());
-    this.homey.log('data', this.getData());
-    this.homey.log('store', this.getStore());
+    this.log('name:', this.getName());
+    this.log('class:', this.getClass());
+    this.log('data', this.getData());
+    this.log('store', this.getStore());
   }
 
   /**
@@ -185,7 +207,7 @@ class PaxDevice extends Homey.Device {
    * @param {string} name The new name
    */
   async onRenamed(name: string) {
-    this.log(`${name} device was renamed`);
+    this.log(`Device was renamed to ${name}`);
   }
 
   /**
@@ -194,7 +216,15 @@ class PaxDevice extends Homey.Device {
   onDeleted() {
     const { onSyncInterval } = this;
     clearInterval(onSyncInterval); // Clear the onSync interval to stop further execution
-    this.homey.log('PAX Calima device has been deleted');
+    this.log('Device has been deleted');
+  }
+
+  public log(message: string, ...args: any[]) {
+    this.homey.log(`[${this.getName()}] ${message}`, ...args);
+  }
+
+  public error(message: string, ...args: any[]) {
+    this.homey.error(`[${this.getName()}] ${message}`, ...args);
   }
 }
 

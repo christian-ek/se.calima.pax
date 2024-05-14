@@ -36,18 +36,25 @@ class PaxApi extends Homey.SimpleClass {
       const isConnected = await this.peripheral.assertConnected();
       if (isConnected) {
         await this.peripheral.disconnect();
+      } else {
+        this.homey.log('Peripheral is already disconnected.');
       }
     } catch (error) {
-      throw new Error(`Unable to disconnect from peripheral: ${error}`);
+      this.homey.error(`Unable to disconnect from peripheral: ${error}`);
     }
   }
 
   checkConnection(): boolean {
-    if (!this.peripheral.assertConnected()) {
-      this.homey.error(`[${this.getName()}]`, 'Peripheral not found or not connected.');
+    try {
+      if (!this.peripheral.assertConnected()) {
+        this.homey.error(`[${this.getName()}]`, 'Peripheral not found or not connected.');
+        return false;
+      }
+      return true;
+    } catch (error) {
+      this.homey.error(`Error checking connection: ${error}`);
       return false;
     }
-    return true;
   }
 
   async getNameAndMode(): Promise<{ name: string; mode: string | undefined }> {
@@ -194,7 +201,6 @@ class PaxApi extends Homey.SimpleClass {
       throw new Error(`Unable to set boost mode: ${error}`);
     }
   }
-
 }
 
 export default PaxApi;
