@@ -4,6 +4,7 @@ import { characteristics, serviceIds } from './consts';
 import FanState from './FanState';
 import BoostMode from './BoostMode';
 import FanSpeed from './FanSpeed';
+import FanMode from './FanMode';
 
 class PaxApi extends Homey.SimpleClass {
 
@@ -27,6 +28,14 @@ class PaxApi extends Homey.SimpleClass {
       );
     } catch (error) {
       throw new Error(`Unable to write PIN to peripheral: ${error}`);
+    }
+  }
+
+  async disconnect(): Promise<void> {
+    try {
+      await this.peripheral.disconnect();
+    } catch (error) {
+      throw new Error(`Unable to disconnect from peripheral: ${error}`);
     }
   }
 
@@ -60,19 +69,8 @@ class PaxApi extends Homey.SimpleClass {
     try {
       const data = await this.peripheral.read(serviceIds.BOOST, characteristics.MODE);
       const unpackedData = struct.unpack('<B', data);
-      const modeIndex = unpackedData[0];
-
-      const index = Number(modeIndex);
-
-      const modes = [
-        'MultiMode',
-        'DraftShutterMode',
-        'WallSwitchExtendedRuntimeMode',
-        'WallSwitchNoExtendedRuntimeMode',
-        'HeatDistributionMode',
-      ];
-
-      return modes[index] ?? undefined;
+      const modeIndex = unpackedData[0] as number;
+      return FanMode.getModeByIndex(modeIndex);
     } catch (error) {
       throw new Error(`Unable to read peripheral: ${error}`);
     }
