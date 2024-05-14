@@ -100,5 +100,8 @@
   },
   "2.0.1": {
     "en": "Refactor some code"
+  },
+  "2.0.2": {
+    "en": "Improved error handling"
   }
 }
