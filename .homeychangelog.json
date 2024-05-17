@@ -103,5 +103,8 @@
   },
   "2.0.2": {
     "en": "Improved error handling"
+  },
+  "2.0.3": {
+    "en": "More logging"
   }
 }
