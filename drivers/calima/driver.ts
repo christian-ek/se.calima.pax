@@ -56,7 +56,7 @@ class PaxCalimaDriver extends Homey.Driver {
   }
 
   async onDiscover(): Promise<void> {
-    this.log('Discovering...');
+    this.log('Running discovery...');
 
     const alreadyAdded = this.getDevices().map((device) => device.getData().id);
 
