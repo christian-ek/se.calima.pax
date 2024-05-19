@@ -1,0 +1,33 @@
+{
+  "title": {
+    "en": "Temperature is above",
+    "sv": "Temperaturen är över"
+  },
+  "titleFormatted": {
+    "en": "Temperature is above [[temperature]] °C",
+    "sv": "Temperaturen är över [[temperature]] °C"
+  },
+  "hint": {
+    "en": "Checks if the temperature is above a specified value.",
+    "sv": "Kollar om temperaturen är över ett specificerat värde."
+  },
+  "platforms": [
+    "local"
+  ],
+  "id": "temperature_above",
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=calima"
+    },
+    {
+      "type": "number",
+      "name": "temperature",
+      "label": {
+        "en": "Temperature (°C)",
+        "sv": "Temperatur (°C)"
+      }
+    }
+  ]
+}

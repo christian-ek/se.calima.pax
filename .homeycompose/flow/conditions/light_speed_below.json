@@ -1,0 +1,34 @@
+{
+    "title": {
+      "en": "Light ventilation speed is below",
+      "sv": "Ljusventilationens hastighet är under"
+    },
+    "titleFormatted": {
+      "en": "Light ventilation speed is below [[speed]]",
+      "sv": "Ljusventilationens hastighet är under [[speed]]"
+    },
+    "hint": {
+      "en": "Checks if the light ventilation speed is below a specified value.",
+      "sv": "Kollar om ljusventilationens hastighet är under ett specificerat värde."
+    },
+    "platforms": [
+      "local"
+    ],
+    "id": "light_speed_below",
+    "args": [
+      {
+        "type": "device",
+        "name": "device",
+        "filter": "driver_id=calima"
+      },
+      {
+        "type": "number",
+        "name": "speed",
+        "label": {
+          "en": "Speed",
+          "sv": "Hastighet"
+        }
+      }
+    ]
+  }
+  

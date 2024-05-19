@@ -1,0 +1,33 @@
+{
+  "title": {
+    "en": "Light ventilation speed is above",
+    "sv": "Ljusventilationens hastighet är över"
+  },
+  "titleFormatted": {
+    "en": "Light ventilation speed is above [[speed]]",
+    "sv": "Ljusventilationens hastighet är över [[speed]]"
+  },
+  "hint": {
+    "en": "Checks if the light ventilation speed is above a specified value.",
+    "sv": "Kollar om ljusventilationens hastighet är över ett specificerat värde."
+  },
+  "platforms": [
+    "local"
+  ],
+  "id": "light_speed_above",
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=calima"
+    },
+    {
+      "type": "number",
+      "name": "speed",
+      "label": {
+        "en": "Speed",
+        "sv": "Hastighet"
+      }
+    }
+  ]
+}

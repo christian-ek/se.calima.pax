@@ -1,0 +1,33 @@
+{
+  "title": {
+    "en": "Humidity ventilation speed is above",
+    "sv": "Luftfuktighetsventilationens hastighet är över"
+  },
+  "titleFormatted": {
+    "en": "Humidity ventilation speed is above [[speed]]",
+    "sv": "Luftfuktighetsventilationens hastighet är över [[speed]]"
+  },
+  "hint": {
+    "en": "Checks if the humidity ventilation speed is above a specified value.",
+    "sv": "Kollar om luftfuktighetsventilationens hastighet är över ett specificerat värde."
+  },
+  "platforms": [
+    "local"
+  ],
+  "id": "humidity_speed_above",
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=calima"
+    },
+    {
+      "type": "number",
+      "name": "speed",
+      "label": {
+        "en": "Speed",
+        "sv": "Hastighet"
+      }
+    }
+  ]
+}

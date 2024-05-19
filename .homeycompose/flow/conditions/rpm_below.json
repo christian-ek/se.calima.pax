@@ -1,0 +1,34 @@
+{
+    "title": {
+      "en": "RPM is below",
+      "sv": "RPM är under"
+    },
+    "titleFormatted": {
+      "en": "RPM is below [[rpm]]",
+      "sv": "RPM är under [[rpm]]"
+    },
+    "hint": {
+      "en": "Checks if the RPM is below a specified value.",
+      "sv": "Kollar om RPM är under ett specificerat värde."
+    },
+    "platforms": [
+      "local"
+    ],
+    "id": "rpm_below",
+    "args": [
+      {
+        "type": "device",
+        "name": "device",
+        "filter": "driver_id=calima"
+      },
+      {
+        "type": "number",
+        "name": "rpm",
+        "label": {
+          "en": "RPM",
+          "sv": "RPM"
+        }
+      }
+    ]
+  }
+  

@@ -1,0 +1,34 @@
+{
+    "title": {
+      "en": "Humidity is below",
+      "sv": "Luftfuktigheten är under"
+    },
+    "titleFormatted": {
+      "en": "Humidity is below [[humidity]] %",
+      "sv": "Luftfuktigheten är under [[humidity]] %"
+    },
+    "hint": {
+      "en": "Checks if the humidity is below a specified value.",
+      "sv": "Kollar om luftfuktigheten är under ett specificerat värde."
+    },
+    "platforms": [
+      "local"
+    ],
+    "id": "humidity_below",
+    "args": [
+      {
+        "type": "device",
+        "name": "device",
+        "filter": "driver_id=calima"
+      },
+      {
+        "type": "number",
+        "name": "humidity",
+        "label": {
+          "en": "Humidity (%)",
+          "sv": "Luftfuktighet (%)"
+        }
+      }
+    ]
+  }
+  

@@ -1,0 +1,33 @@
+{
+  "title": {
+    "en": "Humidity is above",
+    "sv": "Luftfuktigheten är över"
+  },
+  "titleFormatted": {
+    "en": "Humidity is above [[humidity]] %",
+    "sv": "Luftfuktigheten är över [[humidity]] %"
+  },
+  "hint": {
+    "en": "Checks if the humidity is above a specified value.",
+    "sv": "Kollar om luftfuktigheten är över ett specificerat värde."
+  },
+  "platforms": [
+    "local"
+  ],
+  "id": "humidity_above",
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=calima"
+    },
+    {
+      "type": "number",
+      "name": "humidity",
+      "label": {
+        "en": "Humidity (%)",
+        "sv": "Luftfuktighet (%)"
+      }
+    }
+  ]
+}

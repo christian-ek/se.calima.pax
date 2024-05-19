@@ -1,0 +1,34 @@
+{
+    "title": {
+      "en": "Temperature is below",
+      "sv": "Temperaturen är under"
+    },
+    "titleFormatted": {
+      "en": "Temperature is below [[temperature]] °C",
+      "sv": "Temperaturen är under [[temperature]] °C"
+    },
+    "hint": {
+      "en": "Checks if the temperature is below a specified value.",
+      "sv": "Kollar om temperaturen är under ett specificerat värde."
+    },
+    "platforms": [
+      "local"
+    ],
+    "id": "temperature_below",
+    "args": [
+      {
+        "type": "device",
+        "name": "device",
+        "filter": "driver_id=calima"
+      },
+      {
+        "type": "number",
+        "name": "temperature",
+        "label": {
+          "en": "Temperature (°C)",
+          "sv": "Temperatur (°C)"
+        }
+      }
+    ]
+  }
+  

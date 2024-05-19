@@ -1,0 +1,33 @@
+{
+  "title": {
+    "en": "Luminance is above",
+    "sv": "Ljusstyrkan är över"
+  },
+  "titleFormatted": {
+    "en": "Luminance is above [[luminance]] lux",
+    "sv": "Ljusstyrkan är över [[luminance]] lux"
+  },
+  "hint": {
+    "en": "Checks if the luminance is above a specified value.",
+    "sv": "Kollar om ljusstyrkan är över ett specificerat värde."
+  },
+  "platforms": [
+    "local"
+  ],
+  "id": "luminance_above",
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=calima"
+    },
+    {
+      "type": "number",
+      "name": "luminance",
+      "label": {
+        "en": "Luminance (lux)",
+        "sv": "Ljusstyrka (lux)"
+      }
+    }
+  ]
+}

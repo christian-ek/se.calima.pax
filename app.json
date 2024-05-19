@@ -144,6 +144,270 @@
       },
       {
         "title": {
+          "en": "Humidity is above",
+          "sv": "Luftfuktigheten är över"
+        },
+        "titleFormatted": {
+          "en": "Humidity is above [[humidity]] %",
+          "sv": "Luftfuktigheten är över [[humidity]] %"
+        },
+        "hint": {
+          "en": "Checks if the humidity is above a specified value.",
+          "sv": "Kollar om luftfuktigheten är över ett specificerat värde."
+        },
+        "platforms": [
+          "local"
+        ],
+        "id": "humidity_above",
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=calima"
+          },
+          {
+            "type": "number",
+            "name": "humidity",
+            "label": {
+              "en": "Humidity (%)",
+              "sv": "Luftfuktighet (%)"
+            }
+          }
+        ]
+      },
+      {
+        "title": {
+          "en": "Humidity is below",
+          "sv": "Luftfuktigheten är under"
+        },
+        "titleFormatted": {
+          "en": "Humidity is below [[humidity]] %",
+          "sv": "Luftfuktigheten är under [[humidity]] %"
+        },
+        "hint": {
+          "en": "Checks if the humidity is below a specified value.",
+          "sv": "Kollar om luftfuktigheten är under ett specificerat värde."
+        },
+        "platforms": [
+          "local"
+        ],
+        "id": "humidity_below",
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=calima"
+          },
+          {
+            "type": "number",
+            "name": "humidity",
+            "label": {
+              "en": "Humidity (%)",
+              "sv": "Luftfuktighet (%)"
+            }
+          }
+        ]
+      },
+      {
+        "title": {
+          "en": "Humidity ventilation speed is above",
+          "sv": "Luftfuktighetsventilationens hastighet är över"
+        },
+        "titleFormatted": {
+          "en": "Humidity ventilation speed is above [[speed]]",
+          "sv": "Luftfuktighetsventilationens hastighet är över [[speed]]"
+        },
+        "hint": {
+          "en": "Checks if the humidity ventilation speed is above a specified value.",
+          "sv": "Kollar om luftfuktighetsventilationens hastighet är över ett specificerat värde."
+        },
+        "platforms": [
+          "local"
+        ],
+        "id": "humidity_speed_above",
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=calima"
+          },
+          {
+            "type": "number",
+            "name": "speed",
+            "label": {
+              "en": "Speed",
+              "sv": "Hastighet"
+            }
+          }
+        ]
+      },
+      {
+        "title": {
+          "en": "Humidity ventilation speed is below",
+          "sv": "Luftfuktighetsventilationens hastighet är under"
+        },
+        "titleFormatted": {
+          "en": "Humidity ventilation speed is below [[speed]]",
+          "sv": "Luftfuktighetsventilationens hastighet är under [[speed]]"
+        },
+        "hint": {
+          "en": "Checks if the humidity ventilation speed is below a specified value.",
+          "sv": "Kollar om luftfuktighetsventilationens hastighet är under ett specificerat värde."
+        },
+        "platforms": [
+          "local"
+        ],
+        "id": "humidity_speed_below",
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=calima"
+          },
+          {
+            "type": "number",
+            "name": "speed",
+            "label": {
+              "en": "Speed",
+              "sv": "Hastighet"
+            }
+          }
+        ]
+      },
+      {
+        "title": {
+          "en": "Light ventilation speed is above",
+          "sv": "Ljusventilationens hastighet är över"
+        },
+        "titleFormatted": {
+          "en": "Light ventilation speed is above [[speed]]",
+          "sv": "Ljusventilationens hastighet är över [[speed]]"
+        },
+        "hint": {
+          "en": "Checks if the light ventilation speed is above a specified value.",
+          "sv": "Kollar om ljusventilationens hastighet är över ett specificerat värde."
+        },
+        "platforms": [
+          "local"
+        ],
+        "id": "light_speed_above",
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=calima"
+          },
+          {
+            "type": "number",
+            "name": "speed",
+            "label": {
+              "en": "Speed",
+              "sv": "Hastighet"
+            }
+          }
+        ]
+      },
+      {
+        "title": {
+          "en": "Light ventilation speed is below",
+          "sv": "Ljusventilationens hastighet är under"
+        },
+        "titleFormatted": {
+          "en": "Light ventilation speed is below [[speed]]",
+          "sv": "Ljusventilationens hastighet är under [[speed]]"
+        },
+        "hint": {
+          "en": "Checks if the light ventilation speed is below a specified value.",
+          "sv": "Kollar om ljusventilationens hastighet är under ett specificerat värde."
+        },
+        "platforms": [
+          "local"
+        ],
+        "id": "light_speed_below",
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=calima"
+          },
+          {
+            "type": "number",
+            "name": "speed",
+            "label": {
+              "en": "Speed",
+              "sv": "Hastighet"
+            }
+          }
+        ]
+      },
+      {
+        "title": {
+          "en": "Luminance is above",
+          "sv": "Ljusstyrkan är över"
+        },
+        "titleFormatted": {
+          "en": "Luminance is above [[luminance]] lux",
+          "sv": "Ljusstyrkan är över [[luminance]] lux"
+        },
+        "hint": {
+          "en": "Checks if the luminance is above a specified value.",
+          "sv": "Kollar om ljusstyrkan är över ett specificerat värde."
+        },
+        "platforms": [
+          "local"
+        ],
+        "id": "luminance_above",
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=calima"
+          },
+          {
+            "type": "number",
+            "name": "luminance",
+            "label": {
+              "en": "Luminance (lux)",
+              "sv": "Ljusstyrka (lux)"
+            }
+          }
+        ]
+      },
+      {
+        "title": {
+          "en": "Luminance is below",
+          "sv": "Ljusstyrkan är under"
+        },
+        "titleFormatted": {
+          "en": "Luminance is below [[luminance]] lux",
+          "sv": "Ljusstyrkan är under [[luminance]] lux"
+        },
+        "hint": {
+          "en": "Checks if the luminance is below a specified value.",
+          "sv": "Kollar om ljusstyrkan är under ett specificerat värde."
+        },
+        "platforms": [
+          "local"
+        ],
+        "id": "luminance_below",
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=calima"
+          },
+          {
+            "type": "number",
+            "name": "luminance",
+            "label": {
+              "en": "Luminance (lux)",
+              "sv": "Ljusstyrka (lux)"
+            }
+          }
+        ]
+      },
+      {
+        "title": {
           "en": "Mode !{{is|isn't}}",
           "sv": "Läge !{{är|är inte}}"
         },
@@ -193,6 +457,204 @@
           }
         ],
         "id": "mode_equals"
+      },
+      {
+        "title": {
+          "en": "RPM is above",
+          "sv": "RPM är över"
+        },
+        "titleFormatted": {
+          "en": "RPM is above [[rpm]]",
+          "sv": "RPM är över [[rpm]]"
+        },
+        "hint": {
+          "en": "Checks if the RPM is above a specified value.",
+          "sv": "Kollar om RPM är över ett specificerat värde."
+        },
+        "platforms": [
+          "local"
+        ],
+        "id": "rpm_above",
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=calima"
+          },
+          {
+            "type": "number",
+            "name": "rpm",
+            "label": {
+              "en": "RPM",
+              "sv": "RPM"
+            }
+          }
+        ]
+      },
+      {
+        "title": {
+          "en": "RPM is below",
+          "sv": "RPM är under"
+        },
+        "titleFormatted": {
+          "en": "RPM is below [[rpm]]",
+          "sv": "RPM är under [[rpm]]"
+        },
+        "hint": {
+          "en": "Checks if the RPM is below a specified value.",
+          "sv": "Kollar om RPM är under ett specificerat värde."
+        },
+        "platforms": [
+          "local"
+        ],
+        "id": "rpm_below",
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=calima"
+          },
+          {
+            "type": "number",
+            "name": "rpm",
+            "label": {
+              "en": "RPM",
+              "sv": "RPM"
+            }
+          }
+        ]
+      },
+      {
+        "title": {
+          "en": "Temperature is above",
+          "sv": "Temperaturen är över"
+        },
+        "titleFormatted": {
+          "en": "Temperature is above [[temperature]] °C",
+          "sv": "Temperaturen är över [[temperature]] °C"
+        },
+        "hint": {
+          "en": "Checks if the temperature is above a specified value.",
+          "sv": "Kollar om temperaturen är över ett specificerat värde."
+        },
+        "platforms": [
+          "local"
+        ],
+        "id": "temperature_above",
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=calima"
+          },
+          {
+            "type": "number",
+            "name": "temperature",
+            "label": {
+              "en": "Temperature (°C)",
+              "sv": "Temperatur (°C)"
+            }
+          }
+        ]
+      },
+      {
+        "title": {
+          "en": "Temperature is below",
+          "sv": "Temperaturen är under"
+        },
+        "titleFormatted": {
+          "en": "Temperature is below [[temperature]] °C",
+          "sv": "Temperaturen är under [[temperature]] °C"
+        },
+        "hint": {
+          "en": "Checks if the temperature is below a specified value.",
+          "sv": "Kollar om temperaturen är under ett specificerat värde."
+        },
+        "platforms": [
+          "local"
+        ],
+        "id": "temperature_below",
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=calima"
+          },
+          {
+            "type": "number",
+            "name": "temperature",
+            "label": {
+              "en": "Temperature (°C)",
+              "sv": "Temperatur (°C)"
+            }
+          }
+        ]
+      },
+      {
+        "title": {
+          "en": "Trickle ventilation speed is above",
+          "sv": "Basventilationens hastighet är över"
+        },
+        "titleFormatted": {
+          "en": "Trickle ventilation speed is above [[speed]]",
+          "sv": "Basventilationens hastighet är över [[speed]]"
+        },
+        "hint": {
+          "en": "Checks if the trickle ventilation speed is above a specified value.",
+          "sv": "Kollar om basventilationens hastighet är över ett specificerat värde."
+        },
+        "platforms": [
+          "local"
+        ],
+        "id": "trickle_speed_above",
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=calima"
+          },
+          {
+            "type": "number",
+            "name": "speed",
+            "label": {
+              "en": "Speed",
+              "sv": "Hastighet"
+            }
+          }
+        ]
+      },
+      {
+        "title": {
+          "en": "Trickle ventilation speed is below",
+          "sv": "Basventilationens hastighet är under"
+        },
+        "titleFormatted": {
+          "en": "Trickle ventilation speed is below [[speed]]",
+          "sv": "Basventilationens hastighet är under [[speed]]"
+        },
+        "hint": {
+          "en": "Checks if the trickle ventilation speed is below a specified value.",
+          "sv": "Kollar om basventilationens hastighet är under ett specificerat värde."
+        },
+        "platforms": [
+          "local"
+        ],
+        "id": "trickle_speed_below",
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=calima"
+          },
+          {
+            "type": "number",
+            "name": "speed",
+            "label": {
+              "en": "Speed",
+              "sv": "Hastighet"
+            }
+          }
+        ]
       }
     ],
     "actions": [

@@ -1,0 +1,33 @@
+{
+  "title": {
+    "en": "Trickle ventilation speed is above",
+    "sv": "Basventilationens hastighet är över"
+  },
+  "titleFormatted": {
+    "en": "Trickle ventilation speed is above [[speed]]",
+    "sv": "Basventilationens hastighet är över [[speed]]"
+  },
+  "hint": {
+    "en": "Checks if the trickle ventilation speed is above a specified value.",
+    "sv": "Kollar om basventilationens hastighet är över ett specificerat värde."
+  },
+  "platforms": [
+    "local"
+  ],
+  "id": "trickle_speed_above",
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=calima"
+    },
+    {
+      "type": "number",
+      "name": "speed",
+      "label": {
+        "en": "Speed",
+        "sv": "Hastighet"
+      }
+    }
+  ]
+}

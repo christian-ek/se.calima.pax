@@ -1,0 +1,33 @@
+{
+  "title": {
+    "en": "RPM is above",
+    "sv": "RPM är över"
+  },
+  "titleFormatted": {
+    "en": "RPM is above [[rpm]]",
+    "sv": "RPM är över [[rpm]]"
+  },
+  "hint": {
+    "en": "Checks if the RPM is above a specified value.",
+    "sv": "Kollar om RPM är över ett specificerat värde."
+  },
+  "platforms": [
+    "local"
+  ],
+  "id": "rpm_above",
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=calima"
+    },
+    {
+      "type": "number",
+      "name": "rpm",
+      "label": {
+        "en": "RPM",
+        "sv": "RPM"
+      }
+    }
+  ]
+}
