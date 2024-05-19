@@ -106,5 +106,8 @@
   },
   "2.0.3": {
     "en": "More logging"
+  },
+  "2.0.4": {
+    "en": "Add condition cards"
   }
 }
