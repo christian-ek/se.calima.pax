@@ -109,5 +109,8 @@
   },
   "2.0.4": {
     "en": "Add condition cards"
+  },
+  "2.0.5": {
+    "en": "Improve error handling for boost control"
   }
 }
