@@ -177,12 +177,22 @@ class PaxApi extends Homey.SimpleClass {
     }
   }
 
-  startBoost(duration: number): Promise<void> {
-    return this.setBoostMode(1, 2250, duration);
+  async startBoost(duration: number): Promise<void> {
+    try {
+      await this.setBoostMode(1, 2250, duration);
+    } catch (error) {
+      this.homey.error(`Error starting boost: ${error}`);
+      throw error;
+    }
   }
 
-  stopBoost(): Promise<void> {
-    return this.setBoostMode(0, 0, 0);
+  async stopBoost(): Promise<void> {
+    try {
+      await this.setBoostMode(0, 0, 0);
+    } catch (error) {
+      this.homey.error(`Error stopping boost: ${error}`);
+      throw error;
+    }
   }
 
   async setBoostMode(on: number, speed: number, seconds: number): Promise<void> {

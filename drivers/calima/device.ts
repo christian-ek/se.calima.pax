@@ -12,15 +12,15 @@ interface BoostOptions {
 class PaxDevice extends Homey.Device {
   private static SYNC_INTERVAL: number = 1000 * 30; // 30 seconds
   private static DEFAULT_BOOST_DURATION: number = 900;
-  private static RETRY_ATTEMPTS: number = 3;
 
   private advertisement?: BleAdvertisement;
   private onSyncInterval?: ReturnType<typeof setTimeout>;
-  private isSyncing: boolean = false; // Flag to track ongoing sync operations
+  private isSyncing: boolean = false;
 
   async onInit(): Promise<void> {
     this.registerCapabilityListeners();
     this.onSyncInterval = setInterval(() => this.onSync(), PaxDevice.SYNC_INTERVAL);
+    this.onSync();
   }
 
   private registerCapabilityListeners(): void {
@@ -54,12 +54,12 @@ class PaxDevice extends Homey.Device {
     let api: PaxApi | undefined;
     try {
       api = await this.connectToDevice();
-      if (api) {
-        await this.updateDeviceState(api, mode);
-        this.log('Sync operation completed successfully.');
-      } else {
+      if (!api) {
         this.error('Failed to connect to the device, will retry at next interval.');
+        return;
       }
+      await this.updateDeviceState(api, mode);
+      this.log('Sync operation completed successfully.');
     } catch (error) {
       this.error(`Error during onSync operation: ${error instanceof Error ? error.message : String(error)}`);
     } finally {
@@ -71,8 +71,8 @@ class PaxDevice extends Homey.Device {
   private async updateDeviceState(api: PaxApi, mode: string): Promise<void> {
     const fanState = await api.getStatus();
     const fanSpeed = await api.getFanSpeed();
-    this.log(`Fan state: ${fanState.toString()}`);
-    this.log(`Fanspeed: ${fanSpeed.toString()}`);
+    this.log(fanState.toString());
+    this.log(fanSpeed.toString());
 
     await Promise.all([
       this.setCapabilityValue('measure_temperature', fanState.Temp),
@@ -87,63 +87,42 @@ class PaxDevice extends Homey.Device {
 
     if (!FanMode.isHeatDistributionMode(mode)) {
       const boostMode = await api.getBoostMode();
-      this.log(`BoostMode: ${boostMode.toString()}`);
+      this.log(boostMode.toString());
       await this.setCapabilityValue('boost', boostMode.OnOff);
     }
   }
 
   private async findAdvertisement(): Promise<BleAdvertisement | undefined> {
     const { id } = this.getData();
-
-    for (let attempt = 1; attempt <= PaxDevice.RETRY_ATTEMPTS; attempt++) {
-      this.log(`[Attempt ${attempt}] Trying to find device advertisement`);
-      try {
-        return await this.homey.ble.find(id);
-      } catch (error) {
-        this.error(`[Attempt ${attempt}] Failed to find device advertisement`);
-        if (attempt < PaxDevice.RETRY_ATTEMPTS) {
-          await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 1 second before retrying
-        }
-      }
+    try {
+      return await this.homey.ble.find(id);
+    } catch (error) {
+      this.error(`Failed to find device advertisement: ${error instanceof Error ? error.message : String(error)}`);
+      return undefined;
     }
-    return undefined;
-  }
-
-  private async attemptConnection(advertisement: BleAdvertisement): Promise<BlePeripheral | undefined> {
-    for (let attempt = 1; attempt <= PaxDevice.RETRY_ATTEMPTS; attempt++) {
-      this.log(`[Attempt ${attempt}] Trying to connect to the device`);
-      try {
-        const peripheral: BlePeripheral = await advertisement.connect();
-        await peripheral.assertConnected();
-        return peripheral;
-      } catch (error) {
-        this.error(`[Attempt ${attempt}] Failed to connect to device`);
-        if (attempt < PaxDevice.RETRY_ATTEMPTS) {
-          await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 1 second before retrying
-        }
-      }
-    }
-    return undefined;
   }
 
   private async connectToDevice(): Promise<PaxApi | undefined> {
     if (!this.advertisement) {
       this.advertisement = await this.findAdvertisement();
       if (!this.advertisement) {
-        this.error(`Device advertisement not found after ${PaxDevice.RETRY_ATTEMPTS} attempts`);
+        this.error('Device advertisement not found');
         return undefined;
       }
       this.log('Device advertisement found');
     }
 
-    const peripheral = await this.attemptConnection(this.advertisement);
-    if (!peripheral) {
-      this.error(`Failed to connect to device after ${PaxDevice.RETRY_ATTEMPTS} attempts`);
+    try {
+      this.log('Connecting to the device...');
+      const peripheral: BlePeripheral = await this.advertisement.connect();
+      await peripheral.assertConnected();
+      this.log('Peripheral connected');
+      const { pin } = this.getData();
+      return new PaxApi(pin, peripheral, this.homey);
+    } catch (error) {
+      this.error(`Failed to connect to device: ${error instanceof Error ? error.message : String(error)}`);
       return undefined;
     }
-
-    const { pin } = this.getData();
-    return new PaxApi(pin, peripheral, this.homey);
   }
 
   private disconnectFromDevice(api: PaxApi | undefined): void {
@@ -184,6 +163,7 @@ class PaxDevice extends Homey.Device {
       this.log(`Fanspeed (${capability}) set to ${speed} RPM`);
     } catch (error) {
       this.error(`Error setting fan speed for ${capability}: ${error instanceof Error ? error.message : String(error)}`);
+      throw error;
     } finally {
       this.disconnectFromDevice(api);
     }
@@ -207,6 +187,7 @@ class PaxDevice extends Homey.Device {
       await func;
     } catch (error) {
       this.error(`Error changing boost mode: ${error instanceof Error ? error.message : String(error)}`);
+      throw error;
     } finally {
       this.disconnectFromDevice(api);
     }
