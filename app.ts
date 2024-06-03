@@ -17,17 +17,32 @@ class Pax extends Homey.App {
     // action cards
     const boostOff: FlowCardAction = this.homey.flow.getActionCard('boost_off');
     boostOff.registerRunListener(async (args: any) => {
-      return args.device.boostOnOff({ on: false });
+      this.homey.log('boostOff action triggered');
+      if (!args.device) {
+        this.homey.error('Device is not defined');
+        throw new Error('Device is not defined');
+      }
+      await args.device.boostOnOff({ on: false });
+      this.homey.log('boostOff action executed successfully');
+      return Promise.resolve(true);
     });
 
     const boostOn: FlowCardAction = this.homey.flow.getActionCard('boost_on');
     boostOn.registerRunListener(async (args: any) => {
-      return args.device.boostOnOff({
+      this.homey.log('boostOn action triggered');
+      if (!args.device) {
+        this.homey.error('Device is not defined');
+        throw new Error('Device is not defined');
+      }
+      const duration = typeof args.duration === 'number' && args.duration % 25 === 0
+        ? args.duration / 1000 // given in MS
+        : Pax.DEFAULT_BOOST_DURATION;
+      await args.device.boostOnOff({
         on: true,
-        duration: typeof args.duration === 'number' && args.duration % 25 === 0
-          ? args.duration / 1000 // given in MS
-          : Pax.DEFAULT_BOOST_DURATION,
+        duration,
       });
+      this.homey.log(`boostOn action executed successfully with duration: ${duration}`);
+      return Promise.resolve(true);
     });
 
     // condition cards
