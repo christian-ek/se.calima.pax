@@ -37,11 +37,19 @@ class Pax extends Homey.App {
       const duration = typeof args.duration === 'number' && args.duration % 25 === 0
         ? args.duration / 1000 // given in MS
         : Pax.DEFAULT_BOOST_DURATION;
-      await args.device.boostOnOff({
-        on: true,
-        duration,
-      });
-      this.homey.log(`boostOn action executed successfully with duration: ${duration}`);
+
+      try {
+        this.homey.log(`Calling boostOnOff with duration: ${duration}`);
+        await args.device.boostOnOff({
+          on: true,
+          duration,
+        });
+        this.homey.log(`boostOn action executed successfully with duration: ${duration}`);
+      } catch (error) {
+        this.homey.error('Error executing boostOn action');
+        throw error;
+      }
+
       return Promise.resolve(true);
     });
 

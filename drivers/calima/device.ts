@@ -15,7 +15,7 @@ class PaxDevice extends Homey.Device {
 
   private advertisement?: BleAdvertisement;
   private onSyncInterval?: ReturnType<typeof setTimeout>;
-  private isSyncing: boolean = false;
+  private operationInProgress: boolean = false;
 
   async onInit(): Promise<void> {
     this.registerCapabilityListeners();
@@ -40,13 +40,13 @@ class PaxDevice extends Homey.Device {
   }
 
   async onSync(): Promise<void> {
-    if (this.isSyncing) {
-      this.log('Sync operation already in progress, skipping this interval.');
+    if (this.operationInProgress) {
+      this.log('Operation already in progress, skipping this interval.');
       return;
     }
     this.log('Starting sync operation...');
 
-    this.isSyncing = true;
+    this.operationInProgress = true;
     const { firstRun, mode } = this.getStore();
 
     if (firstRun) await this.firstRun(mode);
@@ -64,7 +64,7 @@ class PaxDevice extends Homey.Device {
       this.error(`Error during onSync operation: ${error instanceof Error ? error.message : String(error)}`);
     } finally {
       this.disconnectFromDevice(api);
-      this.isSyncing = false;
+      this.operationInProgress = false;
     }
   }
 
@@ -136,6 +136,12 @@ class PaxDevice extends Homey.Device {
   }
 
   async onCapabilitySetFanSpeed(speed: number, capability: 'trickle' | 'humidity' | 'light'): Promise<void> {
+    if (this.operationInProgress) {
+      this.error('Another operation is in progress, skipping set fan speed.');
+      return;
+    }
+
+    this.operationInProgress = true;
     let api: PaxApi | undefined;
     try {
       api = await this.connectToDevice();
@@ -166,12 +172,20 @@ class PaxDevice extends Homey.Device {
       throw error;
     } finally {
       this.disconnectFromDevice(api);
+      this.operationInProgress = false;
     }
   }
 
   async boostOnOff(options: BoostOptions): Promise<void> {
+    if (this.operationInProgress) {
+      this.error('Another operation is in progress, skipping boost on/off.');
+      return;
+    }
+
+    this.operationInProgress = true;
     let api: PaxApi | undefined;
     try {
+      this.log(`Boost on/off operation started with options: ${JSON.stringify(options)}`);
       api = await this.connectToDevice();
       if (!api) {
         this.error('Failed to connect to the device');
@@ -185,11 +199,13 @@ class PaxDevice extends Homey.Device {
         func = api.stopBoost();
       }
       await func;
+      this.log(`Boost on/off operation completed with options: ${JSON.stringify(options)}`);
     } catch (error) {
       this.error(`Error changing boost mode: ${error instanceof Error ? error.message : String(error)}`);
       throw error;
     } finally {
       this.disconnectFromDevice(api);
+      this.operationInProgress = false;
     }
   }
 

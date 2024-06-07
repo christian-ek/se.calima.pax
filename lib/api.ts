@@ -179,7 +179,9 @@ class PaxApi extends Homey.SimpleClass {
 
   async startBoost(duration: number): Promise<void> {
     try {
+      this.homey.log(`Starting boost with duration: ${duration}`);
       await this.setBoostMode(1, 2250, duration);
+      this.homey.log(`Boost started successfully with duration: ${duration}`);
     } catch (error) {
       this.homey.error(`Error starting boost: ${error}`);
       throw error;
@@ -188,7 +190,9 @@ class PaxApi extends Homey.SimpleClass {
 
   async stopBoost(): Promise<void> {
     try {
+      this.homey.log('Stopping boost');
       await this.setBoostMode(0, 0, 0);
+      this.homey.log('Boost stopped successfully');
     } catch (error) {
       this.homey.error(`Error stopping boost: ${error}`);
       throw error;
@@ -196,21 +200,32 @@ class PaxApi extends Homey.SimpleClass {
   }
 
   async setBoostMode(on: number, speed: number, seconds: number): Promise<void> {
+    this.homey.log(`Setting boost mode: on=${on}, speed=${speed}, seconds=${seconds}`);
+
     if (speed % 25 !== 0) {
-      throw new Error('Speed must be a multiple of 25');
+      const errorMsg = 'Speed must be a multiple of 25';
+      this.homey.error(errorMsg);
+      throw new Error(errorMsg);
     }
 
     if (this.pin === null) {
-      throw new Error('PIN is required to set fan speed');
+      const errorMsg = 'PIN is required to set fan speed';
+      this.homey.error(errorMsg);
+      throw new Error(errorMsg);
     }
 
     try {
       await this.auth(this.pin);
+      this.homey.log('Authentication successful, writing to peripheral');
       await this.peripheral.write(serviceIds.BOOST, characteristics.BOOST, struct.pack('<BHH', on, speed, seconds));
+      this.homey.log(`Boost mode set successfully: on=${on}, speed=${speed}, seconds=${seconds}`);
     } catch (error) {
-      throw new Error(`Unable to set boost mode: ${error}`);
+      const errorMsg = `Unable to set boost mode: ${error}`;
+      this.homey.error(errorMsg);
+      throw new Error(errorMsg);
     }
   }
+
 }
 
 export default PaxApi;
