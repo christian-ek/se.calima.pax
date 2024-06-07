@@ -118,5 +118,8 @@
   },
   "2.0.7": {
     "en": "Handle case where multiple actions could be performed simultaneously"
+  },
+  "2.0.8": {
+    "en": "Retry user operations when first try was cancelled"
   }
 }
