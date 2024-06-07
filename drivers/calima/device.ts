@@ -12,6 +12,7 @@ interface BoostOptions {
 class PaxDevice extends Homey.Device {
   private static SYNC_INTERVAL: number = 1000 * 30; // 30 seconds
   private static DEFAULT_BOOST_DURATION: number = 900;
+  private static RETRY_INTERVAL: number = 5000; // 5 seconds
 
   private advertisement?: BleAdvertisement;
   private onSyncInterval?: ReturnType<typeof setTimeout>;
@@ -135,16 +136,29 @@ class PaxDevice extends Homey.Device {
     }
   }
 
-  async onCapabilitySetFanSpeed(speed: number, capability: 'trickle' | 'humidity' | 'light'): Promise<void> {
-    if (this.operationInProgress) {
-      this.error('Another operation is in progress, skipping set fan speed.');
-      return;
+  private async retryOperation(operation: () => Promise<void>, retries: number = 3, delay: number = PaxDevice.RETRY_INTERVAL): Promise<void> {
+    for (let i = 0; i < retries; i++) {
+      if (!this.operationInProgress) {
+        this.operationInProgress = true;
+        try {
+          await operation();
+          return;
+        } catch (error) {
+          this.error(`Error during operation attempt ${i + 1}: ${error instanceof Error ? error.message : String(error)}`);
+        } finally {
+          this.operationInProgress = false;
+        }
+      } else {
+        this.log(`Operation in progress, retrying in ${delay}ms...`);
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      }
     }
+    this.error('Operation failed after maximum retry attempts.');
+  }
 
-    this.operationInProgress = true;
-    let api: PaxApi | undefined;
-    try {
-      api = await this.connectToDevice();
+  async onCapabilitySetFanSpeed(speed: number, capability: 'trickle' | 'humidity' | 'light'): Promise<void> {
+    await this.retryOperation(async () => {
+      const api = await this.connectToDevice();
       if (!api) {
         this.error('Failed to connect to the device');
         return;
@@ -167,26 +181,14 @@ class PaxDevice extends Homey.Device {
           this.error(`Unrecognized capability: ${capability}`);
       }
       this.log(`Fanspeed (${capability}) set to ${speed} RPM`);
-    } catch (error) {
-      this.error(`Error setting fan speed for ${capability}: ${error instanceof Error ? error.message : String(error)}`);
-      throw error;
-    } finally {
       this.disconnectFromDevice(api);
-      this.operationInProgress = false;
-    }
+    });
   }
 
   async boostOnOff(options: BoostOptions): Promise<void> {
-    if (this.operationInProgress) {
-      this.error('Another operation is in progress, skipping boost on/off.');
-      return;
-    }
-
-    this.operationInProgress = true;
-    let api: PaxApi | undefined;
-    try {
+    await this.retryOperation(async () => {
       this.log(`Boost on/off operation started with options: ${JSON.stringify(options)}`);
-      api = await this.connectToDevice();
+      const api = await this.connectToDevice();
       if (!api) {
         this.error('Failed to connect to the device');
         return;
@@ -200,13 +202,8 @@ class PaxDevice extends Homey.Device {
       }
       await func;
       this.log(`Boost on/off operation completed with options: ${JSON.stringify(options)}`);
-    } catch (error) {
-      this.error(`Error changing boost mode: ${error instanceof Error ? error.message : String(error)}`);
-      throw error;
-    } finally {
       this.disconnectFromDevice(api);
-      this.operationInProgress = false;
-    }
+    });
   }
 
   async firstRun(mode: string): Promise<void> {
