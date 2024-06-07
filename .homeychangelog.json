@@ -115,5 +115,8 @@
   },
   "2.0.6": {
     "en": "Add logs to boost actions"
+  },
+  "2.0.7": {
+    "en": "Handle case where multiple actions could be performed simultaneously"
   }
 }
